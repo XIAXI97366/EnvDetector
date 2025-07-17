@@ -41,10 +41,10 @@ jmethodID g_midOnMessage = nullptr;
 //int sm4DecryptHard(JNIEnv *env, jobject manager);
 void xxProtect(JNIEnv *env, jclass clazz, jobject application,
                jobject process, jobject manager);
-void apply_Protect_Policy();
+void apply_protect_policy();
 
-void *policy_Body_Check_Hook(void *_val);
-void *policy_Body_Check_Debug(void *_val);
-void *policy_Body_Check_Root(void *_val);
+void *policy_body_check_hook(void *_val);
+void *policy_body_check_debug(void *_val);
+void *policy_body_check_root(void *_val);
 
 #endif //CHECKROM_XXGUARD_H

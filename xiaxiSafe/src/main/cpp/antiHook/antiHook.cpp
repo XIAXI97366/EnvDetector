@@ -30,7 +30,7 @@ static bool check_hook_function(void *handle, const char *name) {
     void *symbol = nullptr;
     symbol = dlsym(handle, name);
     if (symbol != nullptr && set_read(symbol) && is_inline_hooked(symbol)) {
-        LOGD("libc.so %s Is Hooked", name);
+        LOGD(" %s Func Is Hooked", name);
         return true;
     }
     return false;
@@ -83,7 +83,7 @@ bool antiHook::check_so_is_hooked() {
 bool antiHook::check_plt_is_hooked() {
     antiPlt antiPlt;
 
-    elf_dyn_info *memself = antiPlt.elf_parse_mem_so("libmx-guard.so");
+    elf_dyn_info *memself = antiPlt.elf_parse_mem_so("libxx-guard.so");
     if (memself){
         if (antiPlt.check_rel_plt(memself) || antiPlt.check_rel_dyn(memself)) {
             return true;

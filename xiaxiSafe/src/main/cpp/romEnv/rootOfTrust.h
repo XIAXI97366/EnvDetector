@@ -18,8 +18,8 @@
 
 class rootOfTrust {
 public:
-    void get_Extension_Value();
-private:
+    void get_extension_value();
+public:
     static JNIEnv *env;
 };
 

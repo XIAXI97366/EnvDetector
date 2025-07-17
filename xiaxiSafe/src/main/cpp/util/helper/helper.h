@@ -52,6 +52,7 @@
 #include "../inlineASM/system_call.h"
 #include "../elf_util/elf_util.h"
 #include "../hook_util/hook_utils.h"
+#include "../../romEnv/rootOfTrust.h"
 
 #define ANDROID_K 19
 #define ANDROID_L 21
@@ -78,7 +79,7 @@
 #define BUFFER_LEN 512
 #define MAX_LENGTH 256
 #define CERT_MAX_LENGTH 1024
-#define cert_V2_sha256 "31169afd304f340f3d1574781fa96a6a00ef47dd56644707a36f3285e4b7caec"
+#define cert_V2_sha256 "e368efd93b876f11f6df19d2716b53e153808bc27783c2d8890c80fe26788d1b"
 #define SHA256_DIGEST_SIZE 64
 
 typedef int (*pfn_system_property_get)(const char *name, char *value);

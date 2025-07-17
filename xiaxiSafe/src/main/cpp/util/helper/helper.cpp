@@ -577,7 +577,7 @@ PROC_EXIT:
 }
 
 // 可以计算壳的签名，但就算是获取了签名，壳如果使用了魔改的算法也无法定位用于比较的字符串（包括 strcmp 和 strncmp）
-// 因为 strcmp 和 strncmp 功能都可以由加固方实现，所以定位签名校验处的希望不到
+// 因为 strcmp 和 strncmp 功能都可以由加固方实现，所以定位签名校验处的希望不大
 bool check_V2_sign_block(FILE *fp, u_long pos, unsigned expected_size, const char *expected_sha256){
     uint32_t signer_sequence_len = 0;
     uint32_t signer_len = 0;
@@ -601,7 +601,8 @@ bool check_V2_sign_block(FILE *fp, u_long pos, unsigned expected_size, const cha
     fread(&certificate_len, sizeof(certificate_len), 1, fp);
 
     if (expected_size != certificate_len){
-        LOGE("[-] %s %d cert size Not meeting expectations ", __FUNCTION__ , __LINE__);
+        LOGE("[-] %s %d cert size Not meeting expectations expected_size -> %d certificate_len -> %d",
+             __FUNCTION__ , __LINE__, expected_size, certificate_len);
         return false;
     }
 

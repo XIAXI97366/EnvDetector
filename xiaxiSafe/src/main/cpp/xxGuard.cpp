@@ -65,7 +65,7 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     if (!check_file_valid(ck.basefd, ck.basePath, sub_strlen(ck.basePath), ck.inode)){
         LOGD("该文件不符合预期");
     }else{
-        check_certificate_2_V2(ck.basefd, 0x374, cert_V2_sha256);
+        check_certificate_2_V2(ck.basefd, 0x36a, cert_V2_sha256);
     }
 
     return JNI_VERSION_1_6;
@@ -77,6 +77,7 @@ void xxProtect(JNIEnv *env, jclass clazz, jobject application, jobject process, 
     g_env = env;
     g_ref = invoke_func();
     antiHook::env = env;
+    rootOfTrust::env = env;
 
 //    if (process != nullptr) {
 //        if (g_event != nullptr) {
@@ -106,10 +107,10 @@ void xxProtect(JNIEnv *env, jclass clazz, jobject application, jobject process, 
 //    }
 
     //应用保护策略
-    apply_Protect_Policy();
+    apply_protect_policy();
 }
 
-void apply_Protect_Policy() {
+void apply_protect_policy() {
     pthread_t checkHook;
     pthread_t checkDebug;
     pthread_t checkRoot;
@@ -141,7 +142,7 @@ void apply_Protect_Policy() {
 //    }
 //}
 
-INLINE void *policy_Body_Check_Hook(void *_val) {
+INLINE void *policy_body_check_hook(void *_val) {
     while (true) {
 
         //检测Libc.so的函数是否被PltHook
@@ -184,7 +185,7 @@ INLINE void *policy_Body_Check_Hook(void *_val) {
     return nullptr;
 }
 
-INLINE void *policy_Body_Check_Debug(void *_val){
+INLINE void *policy_body_check_debug(void *_val){
     pid_t pid = fork();
     if (pid <= 0){
         if (pid){
@@ -206,7 +207,7 @@ INLINE void *policy_Body_Check_Debug(void *_val){
     }
 }
 
-INLINE void *policy_Body_Check_Root(void *_val){
+INLINE void *policy_body_check_root(void *_val){
     memScan::check_process_mem(getpid());
     int result = 0;
 

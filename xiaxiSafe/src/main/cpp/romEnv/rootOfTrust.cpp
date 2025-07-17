@@ -4,6 +4,8 @@
 
 #include "rootOfTrust.h"
 
-void rootOfTrust::get_Extension_Value() {
+JNIEnv *rootOfTrust::env = nullptr;
+
+void rootOfTrust::get_extension_value() {
 
 }
