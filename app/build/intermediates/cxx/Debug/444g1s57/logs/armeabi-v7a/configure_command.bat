@@ -1,0 +1,19 @@
+@echo off
+"C:\\Users\\XIAXI\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\cmake.exe" ^
+  "-HD:\\AS_Project\\XIAXI\\app\\src\\main\\cpp" ^
+  "-DCMAKE_SYSTEM_NAME=Android" ^
+  "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON" ^
+  "-DCMAKE_SYSTEM_VERSION=21" ^
+  "-DANDROID_PLATFORM=android-21" ^
+  "-DANDROID_ABI=armeabi-v7a" ^
+  "-DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a" ^
+  "-DANDROID_NDK=D:\\NDK\\android-ndk-r27c-windows\\android-ndk-r27c" ^
+  "-DCMAKE_ANDROID_NDK=D:\\NDK\\android-ndk-r27c-windows\\android-ndk-r27c" ^
+  "-DCMAKE_TOOLCHAIN_FILE=D:\\NDK\\android-ndk-r27c-windows\\android-ndk-r27c\\build\\cmake\\android.toolchain.cmake" ^
+  "-DCMAKE_MAKE_PROGRAM=C:\\Users\\XIAXI\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe" ^
+  "-DCMAKE_CXX_FLAGS=-std=c++11" ^
+  "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=D:\\AS_Project\\XIAXI\\app\\build\\intermediates\\cxx\\Debug\\444g1s57\\obj\\armeabi-v7a" ^
+  "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=D:\\AS_Project\\XIAXI\\app\\build\\intermediates\\cxx\\Debug\\444g1s57\\obj\\armeabi-v7a" ^
+  "-DCMAKE_BUILD_TYPE=Debug" ^
+  "-BD:\\AS_Project\\XIAXI\\app\\.cxx\\Debug\\444g1s57\\armeabi-v7a" ^
+  -GNinja
