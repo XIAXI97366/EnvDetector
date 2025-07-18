@@ -94,7 +94,7 @@ bool checkMaps::check_map_injected(){
 
 }
 
-// 根据jit内存段的属性判断是否被zygote模块注入
+// 根据jit内存段的属性判断当前进程是否被zygote模块注入
 bool checkMaps::is_zygote_injected() {
     const char *jit_zygote_cache = "/memfd:jit-zygote-cache (deleted)";
     const char *jit_cache = "/memfd:jit-cache (deleted)";
@@ -289,25 +289,39 @@ bool checkMaps::is_map_segment_compliance() {
     return false;
 }
 
-
+// 通过文件
 bool checkMaps::check_maps_valid() {
     std::string fdPath("/proc/");
     char buf[MAX_LENGTH] = {0};
     size_t len = 0;
     char mapPath[MAX_LENGTH] = {0};
+    int dstFd = 0;
+    char dstPath[MAX_LENGTH] = {0};
 
     if (mapfd <= 0){
         return false;
     }
 
     sprintf(mapPath, "/proc/%d/maps", getpid());
-    fdPath.append(std::to_string(getpid())).append("/fd/").append(std::to_string(mapfd));
-    len = sub_readlinkat(AT_FDCWD, fdPath.c_str(), buf, PATH_MAX);
-    if ((len > 0) && (0 == sub_strncmp(buf, mapPath, sub_strlen(buf)))){
-        LOGE("[+] %s %d maps path is meeting expectations ", __FUNCTION__ , __LINE__);
-        return true;
+    // 攻击方是从 Hook open 函数 作为启动，如在私有目录创建了一个新的maps文件
+    dstFd = open(mapPath, O_RDONLY);
+    if (dstFd > 0){
+        fdPath.append(std::to_string(getpid())).append("/fd/").append(std::to_string(mapfd));
+        len = sub_readlinkat(AT_FDCWD, fdPath.c_str(), buf, PATH_MAX);
+
+        /////////////////////////////////////此处需要修改
+        ////////////////////////////////////
+
+        LOGE("[+] mapPath -> %s buf -> %s fdPath -> %s", buf , mapPath, fdPath.c_str());
+        if ((len > 0) && (0 == sub_strncmp(buf, mapPath, sub_strlen(buf)))){
+            LOGE("[+] %s %d maps path is meeting expectations ", __FUNCTION__ , __LINE__);
+            return true;
+        }else{
+            LOGE("[-] %s %d maps path is not meeting expectations ", __FUNCTION__ , __LINE__);
+            return false;
+        }
     }else{
-        LOGE("[-] %s %d maps path is not meeting expectations ", __FUNCTION__ , __LINE__);
+        LOGE("[-] open map error %s, %d", __FUNCTION__, __LINE__);
         return false;
     }
 }
