@@ -289,31 +289,29 @@ bool checkMaps::is_map_segment_compliance() {
     return false;
 }
 
-// 通过文件
+// 通过 fd 反查攻击者是否伪造了 maps 文件
 bool checkMaps::check_maps_valid() {
     std::string fdPath("/proc/");
-    char buf[MAX_LENGTH] = {0};
     size_t len = 0;
     char mapPath[MAX_LENGTH] = {0};
     int dstFd = 0;
     char dstPath[MAX_LENGTH] = {0};
+    char realPath[MAX_LENGTH] = {0};
 
     if (mapfd <= 0){
         return false;
     }
 
-    sprintf(mapPath, "/proc/%d/maps", getpid());
-    // 攻击方是从 Hook open 函数 作为启动，如在私有目录创建了一个新的maps文件
-    dstFd = open(mapPath, O_RDONLY);
+    // 攻击方者 是从 Hook open 函数作为起点，修了 maps 文件的路径（如在私有目录创建了一个新的 maps 文件）
+    dstFd = open("/proc/self/maps", O_RDONLY);
     if (dstFd > 0){
         fdPath.append(std::to_string(getpid())).append("/fd/").append(std::to_string(mapfd));
-        len = sub_readlinkat(AT_FDCWD, fdPath.c_str(), buf, PATH_MAX);
+        sub_readlinkat(AT_FDCWD, fdPath.c_str(), mapPath, PATH_MAX);
 
-        /////////////////////////////////////此处需要修改
-        ////////////////////////////////////
+        snprintf(dstPath, sizeof(dstPath), "/proc/self/fd/%d", dstFd);
+        len = readlinkat(AT_FDCWD, dstPath, realPath, PATH_MAX);
 
-        LOGE("[+] mapPath -> %s buf -> %s fdPath -> %s", buf , mapPath, fdPath.c_str());
-        if ((len > 0) && (0 == sub_strncmp(buf, mapPath, sub_strlen(buf)))){
+        if ((len > 0) && (0 == sub_strncmp(mapPath, realPath, sub_strlen(mapPath)))){
             LOGE("[+] %s %d maps path is meeting expectations ", __FUNCTION__ , __LINE__);
             return true;
         }else{
