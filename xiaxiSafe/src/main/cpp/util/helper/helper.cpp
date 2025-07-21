@@ -541,7 +541,7 @@ bool check_certificate_2_V2(int fd, unsigned expected_size, const char *expected
             pos = ftell(fp);
             off = 4;
             if (id == SIGNATURE_SCHEME_V2_MAGIC){
-                LOGE("[+] %s %d v2_signing_exist ", __FUNCTION__ , __LINE__);
+                // LOGE("[+] %s %d v2_signing_exist ", __FUNCTION__ , __LINE__);
                 v2_signing_blocks++;
                 v2_signing_valid = check_V2_sign_block(fp, pos, expected_size, expected_sha256);
             }else if(id == 0xf05368c0){
@@ -549,9 +549,9 @@ bool check_certificate_2_V2(int fd, unsigned expected_size, const char *expected
                 v3_signing_exist = true;
             }else if(id == 0x1b93ad61){
                 v3_1_signing_exist = true;
-                LOGE("[+] %s %d v3_1_signing_exist ", __FUNCTION__ , __LINE__);
+                // LOGE("[+] %s %d v3_1_signing_exist ", __FUNCTION__ , __LINE__);
             }else{
-                LOGE("[-] %s %d Unknown id: 0x%08x" , __FUNCTION__ , __LINE__, id);
+                // LOGE("[-] %s %d Unknown id: 0x%08x" , __FUNCTION__ , __LINE__, id);
             }
             pos += (u64_val - off);
             fseek(fp, pos, SEEK_SET);
@@ -612,11 +612,11 @@ bool check_V2_sign_block(FILE *fp, u_long pos, unsigned expected_size, const cha
     }
 
     // 此处获取的 cert 数据是.jks导出.crt证书后，其.crt证书的二进制
-    LOGE("[+] %s %d certificate_len = %d ", __FUNCTION__ , __LINE__, certificate_len);
+    // LOGE("[+] %s %d certificate_len = %d ", __FUNCTION__ , __LINE__, certificate_len);
     fread(cert, certificate_len, 1, fp);
     sub_strncpy(sha256, get_hash_2_SHA256(&cert[0], &cert[certificate_len]),
                 SHA256_DIGEST_SIZE + 1);
-    LOGE("[+] %s %d certificate V2 SHA256 = %s ", __FUNCTION__ , __LINE__, sha256);
+    // LOGE("[+] %s %d certificate V2 SHA256 = %s ", __FUNCTION__ , __LINE__, sha256);
     if (0 != sub_strncmp(sha256, expected_sha256, SHA256_DIGEST_SIZE)){
         return false;
     }
@@ -631,45 +631,63 @@ const char *get_hash_2_SHA256(u_char *blockBegin, u_char *blockEnd){
     std::vector<unsigned char> hash(picosha2::k_digest_size);
     hasher.get_hash_bytes(hash.begin(), hash.end());
     std::string hex_str = picosha2::get_hash_hex_string(hasher);
-    LOGE("[+] %s %d hex_str.c_str %s ", __FUNCTION__ , __LINE__, hex_str.c_str());
+    // LOGE("[+] %s %d hex_str.c_str %s ", __FUNCTION__ , __LINE__, hex_str.c_str());
     return hex_str.c_str();
 }
 
-bool check_file_valid(int fd, const char *filePath, ssize_t pathLen, int inode){
+bool check_baseapk_valid(int fd, const char *filePath, ssize_t pathLen, int inode){
     char buf[PATH_MAX] = {0};
     std::string fdPath("/proc/");
     struct stat statBuf = {0};
     size_t len = 0;
+    int dstFd = 0;
+    char dstPath[MAX_LENGTH] = {0};
+    char realPath[MAX_LENGTH] = {0};
 
     // 检查长度是否匹配
     fdPath.append(std::to_string(getpid())).append("/fd/").append(std::to_string(fd));
     len = sub_readlinkat(AT_FDCWD, fdPath.c_str(), buf, PATH_MAX);
     if (pathLen != len){
-        LOGE("[+] %s %d file path length is not meeting expectations ", __FUNCTION__ , __LINE__);
+        LOGE("[-] %s %d file path length is not meeting expectations ", __FUNCTION__ , __LINE__);
+        return true;
+    }
+
+    // 使用 open 打开 filePath 文件再次查看 fd 返回路径是否匹配
+    dstFd = open(filePath, O_RDONLY);
+    if (dstFd > 0){
+        snprintf(dstPath, sizeof(dstPath), "/proc/self/fd/%d", dstFd);
+        len = readlinkat(AT_FDCWD, dstPath, realPath, MAX_LENGTH);
+        if (pathLen != len){
+            LOGE("[-] %s %d file path length is not meeting expectations ", __FUNCTION__ , __LINE__);
+            return true;
+        }
+    }else{
+        LOGE("[-] %s %d open file is error ", __FUNCTION__ , __LINE__);
         return false;
     }
 
     // 检查路径是否匹配
-    if (0 != sub_strncmp(filePath, buf, sub_strlen(filePath))){
-        LOGE("[+] %s %d file path is not meeting expectations ", __FUNCTION__ , __LINE__);
-        return false;
+    if (0 != sub_strncmp(realPath, buf, sub_strlen(realPath))){
+        LOGE("[-] %s %d file path is not meeting expectations ", __FUNCTION__ , __LINE__);
+        return true;
     }
 
     // 检查文件id、inode是否匹配
-    if ( 0 > sub_fstat(fd, &statBuf)){
-        LOGE("[+] %s %d file path is not meeting expectations ", __FUNCTION__ , __LINE__);
+    if ( 0 > sub_fstat(dstFd, &statBuf)){
+        LOGE("[-] %s %d call fstat is error ", __FUNCTION__ , __LINE__);
         return false;
     }else{
         if (inode != statBuf.st_ino){
-            LOGE("[+] %s %d file inode is not meeting expectations ", __FUNCTION__ , __LINE__);
-            return false;
+            LOGE("[-] %s %d file inode is not meeting expectations ", __FUNCTION__ , __LINE__);
+            return true;
         }
         if (1000 != statBuf.st_gid || 1000 != statBuf.st_uid){
-            LOGE("[+] %s %d file gid or uid is not meeting expectations ", __FUNCTION__ , __LINE__);
-            return false;
+            LOGE("[-] %s %d file gid or uid is not meeting expectations ", __FUNCTION__ , __LINE__);
+            return true;
         }
     }
-    return true;
+    LOGE("[+] %s %d base.apk path is meeting expectations ", __FUNCTION__ , __LINE__);
+    return false;
 }
 
 void *inlineHooker(void *targetFunc, void *replaceFunc) {

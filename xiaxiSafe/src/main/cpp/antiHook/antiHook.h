@@ -22,6 +22,10 @@ typedef struct {
     bool (*antiXPosed_check_service)(JNIEnv *env);
     bool (*antiXPosed_check_class)(JNIEnv *env);
     bool (*antiXPosed_check_process)();
+
+    bool (*antiProcess_check_maps_is_fack)();
+    bool (*antiProcess_check_zygote_is_injected)();
+    bool (*antiPackage_check_signtrue2_is_fack)();
 } ANTIHOOK;
 
 static bool check_hook_function(void *handle, const char *name);
@@ -33,6 +37,7 @@ public:
     static bool check_libc_is_hooked();
     static bool check_plt_is_hooked();
     static bool check_so_is_hooked();
+    static bool check_maps_is_hooked();
 public:
     static std::unordered_map<std::string, void*> protectFunc;
     static JNIEnv *env;

@@ -117,7 +117,7 @@ bool check_certificate_2_V2(int fd, unsigned expected_size, const char *expected
 
 const char *get_hash_2_SHA256(u_char *blockBegin, u_char *blockEnd);
 
-// 通过反查路径判断文件是否有效
-bool check_file_valid(int fd, const char *filePath, ssize_t pathLen, int inode);
+// 通过fd反查路径判断文件是否有效
+bool check_baseapk_valid(int fd, const char *filePath, ssize_t pathLen, int inode);
 
 #endif //CHECKROM_HELPER_H

@@ -32,7 +32,7 @@ public:
     int mapfd = 0;
     int basefd = 0;
     char basePath[MAX_LENGTH] = {0};
-    int inode = 0;
+    int inode = 0; // 保存 maps 指向 base.apk 那一项内存段的 inode 号
 };
 
 

@@ -18,6 +18,9 @@ static ANTIHOOK anti = {
                     antiXPosed::check_service,
                     antiXPosed::check_class,
                     antiXPosed::check_process
+
+
+
 };
 
 

@@ -56,17 +56,17 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
 //    LOGD("sym -> %p ", sym);
 
 
-    checkMaps ck;
-    ck.get_map_seg_info();
-    ck.check_maps_valid();
-    ck.get_base_fd();
-    ck.is_zygote_injected();
-    ck.is_map_segment_compliance();
-    if (!check_file_valid(ck.basefd, ck.basePath, sub_strlen(ck.basePath), ck.inode)){
-        LOGD("该文件不符合预期");
-    }else{
-        check_certificate_2_V2(ck.basefd, 0x36a, cert_V2_sha256);
-    }
+//    checkMaps ck;
+//    ck.get_map_seg_info();
+//    ck.get_base_fd();
+//    ck.check_maps_valid();
+//    ck.is_zygote_injected();
+//    ck.is_map_segment_compliance();
+//    if (!check_baseapk_valid(ck.basefd, ck.basePath, sub_strlen(ck.basePath), ck.inode)){
+//        LOGD("该文件不符合预期");
+//    }else{
+//        check_certificate_2_V2(ck.basefd, 0x36a, cert_V2_sha256);
+//    }
 
     return JNI_VERSION_1_6;
 }
@@ -115,6 +115,9 @@ void apply_protect_policy() {
     pthread_t checkDebug;
     pthread_t checkRoot;
     pthread_t checkInject;
+    pthread_t checkMaps;
+
+    pthread_create(&checkMaps, nullptr, &policy_body_checkmap, nullptr);
 
 //    if (g_pConfig->isInject){
 //        pthread_create(&checkInject, nullptr, &policyBodyCheckInject, nullptr);
@@ -141,6 +144,35 @@ void apply_protect_policy() {
 //        exit(0);
 //    }
 //}
+
+INLINE void *policy_body_checkmap(void *_val) {
+    while (true) {
+        checkMaps ck;
+        ck.get_map_seg_info();
+        ck.get_base_fd();
+
+        if (ck.check_maps_valid()){
+            return nullptr;
+        }
+
+        if(ck.is_zygote_injected()){
+            return nullptr;
+        }
+
+        if(ck.is_map_segment_compliance()){
+            return nullptr;
+        }
+
+        if (check_baseapk_valid(ck.basefd, ck.basePath, sub_strlen(ck.basePath), ck.inode)){
+            return nullptr;
+        }else{
+            check_certificate_2_V2(ck.basefd, 0x36a, cert_V2_sha256);
+        }
+
+        sleep(3);
+    }
+    return nullptr;
+}
 
 INLINE void *policy_body_check_hook(void *_val) {
     while (true) {

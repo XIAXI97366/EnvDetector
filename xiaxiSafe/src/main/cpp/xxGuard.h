@@ -46,5 +46,6 @@ void apply_protect_policy();
 void *policy_body_check_hook(void *_val);
 void *policy_body_check_debug(void *_val);
 void *policy_body_check_root(void *_val);
+void *policy_body_checkmap(void *_val);
 
 #endif //CHECKROM_XXGUARD_H

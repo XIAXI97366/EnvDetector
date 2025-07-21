@@ -57,7 +57,7 @@ p_map_seg_info checkMaps::get_map_seg_info() {
     if (mapfd > 0) {
         while (0 < (read_line(mapfd, buffer, BUFFER_LEN)) ) {
             if (sscanf(buffer, "%lx-%lx %4s %lx %*s %ld %255[^\n]", &base, &end, perm, &offset, &inode, path) != 0) {
-                LOGE("base:%lx-end:%lx perm:%4s offset:%lx inode:%ld path:%s", base, end, perm, offset, inode, path);
+                // LOGE("base:%lx-end:%lx perm:%4s offset:%lx inode:%ld path:%s", base, end, perm, offset, inode, path);
                 tmp = (p_map_seg_info)malloc(sizeof(map_seg_info));
                 memset(tmp, 0, sizeof(map_seg_info));
                 tmp->start = base;
@@ -80,21 +80,17 @@ p_map_seg_info checkMaps::get_map_seg_info() {
                 continue;
             }
         }
-        LOGE("[+] save map info successfull");
+        LOGE("[+] save maps info successfull");
         return phdr;
     }else {
-        LOGE("[-] open map error %s, %d", __FUNCTION__, __LINE__);
+        LOGE("[-] sub_openat map error %s, %d", __FUNCTION__, __LINE__);
         return nullptr;
     }
 
     return nullptr;
 }
 
-bool checkMaps::check_map_injected(){
-
-}
-
-// 根据jit内存段的属性判断当前进程是否被zygote模块注入
+// 根据jit内存段的属性判断当前进程是否被zygote模块注入（该方案用于针对 Shamiko 前期方案）
 bool checkMaps::is_zygote_injected() {
     const char *jit_zygote_cache = "/memfd:jit-zygote-cache (deleted)";
     const char *jit_cache = "/memfd:jit-cache (deleted)";
@@ -233,6 +229,8 @@ bool checkMaps::is_zygote_injected() {
     return false;
 }
 
+// 该检测用于检查扫描 maps 中所有可执行内存，如果路径既不是以 / 开头，也不是 [vdso]，或者路径以 /dev/zero 开头，则认为存在注入
+// 剩余的项如果 maps 中的 inode 和 stat 对应路径的 inode 不一致，或常规路径检查发现端倪，则认为存在注入
 bool checkMaps::is_map_segment_compliance() {
     const char *shared_mem_flag = "/dev/zero";
     const char *rename_flag = "[anon:name]";
@@ -249,7 +247,7 @@ bool checkMaps::is_map_segment_compliance() {
             break;
         }
 
-        // 扫描是否具有匿名内存且存在可执行属性的情况
+        // 扫描是否具有匿名内存且存在可执行属性的情况（无内存名称和 inode 为0）
         if ('x' == tmp->property[2] && (0 == sub_strlen(tmp->name)) && 0 == tmp->inode){
             LOGD("[-] 扫描到具有可执行属性的匿名内存 start->%p end->%p", tmp->start, tmp->end);
             if (tmp->end - tmp->start > 0x1000){
@@ -258,10 +256,11 @@ bool checkMaps::is_map_segment_compliance() {
                 return true;
             }
         }
-        // 扫描 maps 中所有可执行内存 要是路径以 / 或者 [vdso] 或 /dev/zero 开头 则不认为存在注入
-        // 扫描 maps 中所有可执行内存，如果路径既不是以 / 开头，也不是 [vdso]，或者路径以 /dev/zero 开头，则认为存在注入
+        // 扫描 maps 中所有可执行内存 要是路径以 / 或者 [vdso] 且不是以 /dev/zero 和 [anon:name] 开头 则不认为存在注入
+        // 扫描 maps 中所有可执行内存，如果路径既不是以 / 开头，也不是 [vdso]，或者路径以 /dev/zero 和 [anon:name] 开头，则认为存在注入
         if ('x' == tmp->property[2] && ('/' != tmp->name[0])){
-            if(0 != sub_strncmp(vdso_flag, tmp->name,sub_strlen(vdso_flag))){
+            // 排除掉是内存名称是 [vdso] 的情况
+            if(0 != sub_strncmp(vdso_flag, tmp->name,sub_strlen(tmp->name))){
                 LOGE("[-] 扫描到非法路径 ==> %s start->%p end->%p 大小->%p"
                      , tmp->name[0], tmp->start, tmp->end, tmp->end - tmp->start);
                 return true;
@@ -289,7 +288,7 @@ bool checkMaps::is_map_segment_compliance() {
     return false;
 }
 
-// 通过 fd 反查攻击者是否伪造了 maps 文件
+// 通过 fd 反查是否伪造了 maps 文件
 bool checkMaps::check_maps_valid() {
     std::string fdPath("/proc/");
     size_t len = 0;
@@ -299,24 +298,25 @@ bool checkMaps::check_maps_valid() {
     char realPath[MAX_LENGTH] = {0};
 
     if (mapfd <= 0){
+        LOGE("[-] mapfd is <= 0 %s, %d", __FUNCTION__, __LINE__);
         return false;
     }
 
-    // 攻击方者 是从 Hook open 函数作为起点，修了 maps 文件的路径（如在私有目录创建了一个新的 maps 文件）
+    // 攻击者 是从 Hook open 函数作为起点，修改了 maps 文件的路径（如：在私有目录（/data/data/package）创建了一个新的 maps 文件）
     dstFd = open("/proc/self/maps", O_RDONLY);
     if (dstFd > 0){
         fdPath.append(std::to_string(getpid())).append("/fd/").append(std::to_string(mapfd));
-        sub_readlinkat(AT_FDCWD, fdPath.c_str(), mapPath, PATH_MAX);
+        sub_readlinkat(AT_FDCWD, fdPath.c_str(), mapPath, MAX_LENGTH);
 
         snprintf(dstPath, sizeof(dstPath), "/proc/self/fd/%d", dstFd);
-        len = readlinkat(AT_FDCWD, dstPath, realPath, PATH_MAX);
+        len = readlinkat(AT_FDCWD, dstPath, realPath, MAX_LENGTH);
 
-        if ((len > 0) && (0 == sub_strncmp(mapPath, realPath, sub_strlen(mapPath)))){
+        if ((len > 0) && (0 == sub_strncmp(mapPath, realPath, sub_strlen(realPath)))){
             LOGE("[+] %s %d maps path is meeting expectations ", __FUNCTION__ , __LINE__);
-            return true;
+            return false;
         }else{
             LOGE("[-] %s %d maps path is not meeting expectations ", __FUNCTION__ , __LINE__);
-            return false;
+            return true;
         }
     }else{
         LOGE("[-] open map error %s, %d", __FUNCTION__, __LINE__);
@@ -324,6 +324,7 @@ bool checkMaps::check_maps_valid() {
     }
 }
 
+// 获取 base.apk 的 fd 并给 basePath 进行赋值
 bool checkMaps::get_base_fd(){
     char path[MAX_LENGTH] = {0};
 
@@ -332,6 +333,7 @@ bool checkMaps::get_base_fd(){
         return false;
     }
 
+    // 调用 get_map_segment_path 方法中给 basePath 成员赋值
     get_map_segment_path("/base.apk", path, sizeof(path));
     if (0 == sub_strlen(path)){
         LOGE("[-] %s %d path size ==> 0 ", __FUNCTION__ , __LINE__);
@@ -373,5 +375,6 @@ void checkMaps::get_map_segment_path(const char *key, char *buf, int size){
     }
 }
 
-
+bool checkMaps::check_map_injected(){
+}
 
