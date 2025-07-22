@@ -249,12 +249,9 @@ bool checkMaps::is_map_segment_compliance() {
 
         // 扫描是否具有匿名内存且存在可执行属性的情况（无内存名称和 inode 为0）
         if ('x' == tmp->property[2] && (0 == sub_strlen(tmp->name)) && 0 == tmp->inode){
-            LOGD("[-] 扫描到具有可执行属性的匿名内存 start->%p end->%p", tmp->start, tmp->end);
-            if (tmp->end - tmp->start > 0x1000){
-                LOGE("[-] 扫描到具有可执行属性的匿名内存 start->%p end->%p 大小->%p",
-                     tmp->start, tmp->end, tmp->end - tmp->start);
-                return true;
-            }
+            LOGE("[-] 扫描到具有可执行属性的匿名内存 start->%p end->%p 大小->%p",
+                 tmp->start, tmp->end, tmp->end - tmp->start);
+            return true;
         }
         // 扫描 maps 中所有可执行内存 要是路径以 / 或者 [vdso] 且不是以 /dev/zero 和 [anon:name] 开头 则不认为存在注入
         // 扫描 maps 中所有可执行内存，如果路径既不是以 / 开头，也不是 [vdso]，或者路径以 /dev/zero 和 [anon:name] 开头，则认为存在注入
@@ -271,7 +268,8 @@ bool checkMaps::is_map_segment_compliance() {
                 (nullptr != sub_strstr(shared_mem_flag, tmp->name)) ||
                 (nullptr != sub_strstr(rename_flag, tmp->name))
                 )){
-            LOGE("[-] 扫描到具有共享和可执行属性的匿名内存或[anon:name]的存在");
+            LOGE("[-] 扫描到具有共享和可执行属性的匿名内存或[anon:name]的存在 start->%p end->%p 大小->%p",
+                 tmp->start, tmp->end, tmp->end - tmp->start);
             return true;
         }
 
@@ -306,13 +304,15 @@ bool checkMaps::check_maps_valid() {
     dstFd = open("/proc/self/maps", O_RDONLY);
     if (dstFd > 0){
         fdPath.append(std::to_string(getpid())).append("/fd/").append(std::to_string(mapfd));
-        sub_readlinkat(AT_FDCWD, fdPath.c_str(), mapPath, MAX_LENGTH);
+        sub_readlinkat(mapfd, fdPath.c_str(), mapPath, MAX_LENGTH);
 
         snprintf(dstPath, sizeof(dstPath), "/proc/self/fd/%d", dstFd);
-        len = readlinkat(AT_FDCWD, dstPath, realPath, MAX_LENGTH);
+        len = readlinkat(dstFd, dstPath, realPath, MAX_LENGTH);
 
         if ((len > 0) && (0 == sub_strncmp(mapPath, realPath, sub_strlen(realPath)))){
+            LOGE("[+] dstFd -> %d mapfd -> %d ", dstFd , mapfd);
             LOGE("[+] %s %d maps path is meeting expectations ", __FUNCTION__ , __LINE__);
+            LOGE("[+] mapPath -> %s || realPath -> %s", mapPath , realPath);
             return false;
         }else{
             LOGE("[-] %s %d maps path is not meeting expectations ", __FUNCTION__ , __LINE__);

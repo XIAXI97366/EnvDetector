@@ -14,9 +14,9 @@
       proguardRules="proguard.txt"/>
   <library
       name="D:\AS_Project\XIAXI@@:xiaxiSafe::release"
-      jars="C:\Users\XIAXI\.gradle\caches\8.10\transforms\beeae8b8d4cc3f856081a501250d217e\transformed\out\jars\classes.jar;C:\Users\XIAXI\.gradle\caches\8.10\transforms\beeae8b8d4cc3f856081a501250d217e\transformed\out\jars\libs\R.jar"
+      jars="C:\Users\XIAXI\.gradle\caches\8.10\transforms\dd7184681bb348c78804ec1fb5119171\transformed\out\jars\classes.jar;C:\Users\XIAXI\.gradle\caches\8.10\transforms\dd7184681bb348c78804ec1fb5119171\transformed\out\jars\libs\R.jar"
       resolved="checkROM:xiaxiSafe:unspecified"
-      folder="C:\Users\XIAXI\.gradle\caches\8.10\transforms\beeae8b8d4cc3f856081a501250d217e\transformed\out"
+      folder="C:\Users\XIAXI\.gradle\caches\8.10\transforms\dd7184681bb348c78804ec1fb5119171\transformed\out"
       manifest="AndroidManifest.xml"
       resFolder="res"
       assetsFolder="assets"

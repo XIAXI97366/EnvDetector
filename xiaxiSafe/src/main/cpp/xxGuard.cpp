@@ -151,6 +151,7 @@ INLINE void *policy_body_checkmap(void *_val) {
         ck.get_map_seg_info();
         ck.get_base_fd();
 
+        LOGE("[+] /////////////////////////////////////////////");
         if (ck.check_maps_valid()){
             return nullptr;
         }
@@ -159,16 +160,17 @@ INLINE void *policy_body_checkmap(void *_val) {
             return nullptr;
         }
 
-        if(ck.is_map_segment_compliance()){
-            return nullptr;
-        }
+//        if(ck.is_map_segment_compliance()){
+//            return nullptr;
+//        }
 
         if (check_baseapk_valid(ck.basefd, ck.basePath, sub_strlen(ck.basePath), ck.inode)){
             return nullptr;
         }else{
             check_certificate_2_V2(ck.basefd, 0x36a, cert_V2_sha256);
         }
-
+        LOGE("[+] /////////////////////////////////////////////");
+        LOGE("【///////////////////////////////////////////////】");
         sleep(3);
     }
     return nullptr;
