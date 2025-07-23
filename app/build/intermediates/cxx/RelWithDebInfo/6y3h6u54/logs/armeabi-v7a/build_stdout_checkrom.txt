@@ -1,0 +1,2 @@
+ninja: Entering directory `E:\Custom tools\XIAXI\app\.cxx\RelWithDebInfo\6y3h6u54\armeabi-v7a'
+ninja: no work to do.

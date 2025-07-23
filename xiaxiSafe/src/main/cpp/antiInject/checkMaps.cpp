@@ -304,17 +304,17 @@ bool checkMaps::check_maps_valid() {
     dstFd = open("/proc/self/maps", O_RDONLY);
     if (dstFd > 0){
         fdPath.append(std::to_string(getpid())).append("/fd/").append(std::to_string(mapfd));
-        sub_readlinkat(mapfd, fdPath.c_str(), mapPath, MAX_LENGTH);
-
+        sub_readlinkat(AT_FDCWD, fdPath.c_str(), mapPath, MAX_LENGTH);
+        LOGE("[+] dstFd -> %d mapfd -> %d ", dstFd , mapfd);
         snprintf(dstPath, sizeof(dstPath), "/proc/self/fd/%d", dstFd);
-        len = readlinkat(dstFd, dstPath, realPath, MAX_LENGTH);
+        len = sub_readlinkat(AT_FDCWD, dstPath, realPath, MAX_LENGTH);
 
         if ((len > 0) && (0 == sub_strncmp(mapPath, realPath, sub_strlen(realPath)))){
-            LOGE("[+] dstFd -> %d mapfd -> %d ", dstFd , mapfd);
             LOGE("[+] %s %d maps path is meeting expectations ", __FUNCTION__ , __LINE__);
-            LOGE("[+] mapPath -> %s || realPath -> %s", mapPath , realPath);
+            LOGE("[+] mapPath -> %s realPath -> %s", mapPath , realPath);
             return false;
         }else{
+            LOGE("[-] %s %d mapPath -> %s realPath -> %s", mapPath , realPath);
             LOGE("[-] %s %d maps path is not meeting expectations ", __FUNCTION__ , __LINE__);
             return true;
         }

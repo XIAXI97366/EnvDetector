@@ -656,7 +656,7 @@ bool check_baseapk_valid(int fd, const char *filePath, ssize_t pathLen, int inod
     dstFd = open(filePath, O_RDONLY);
     if (dstFd > 0){
         snprintf(dstPath, sizeof(dstPath), "/proc/self/fd/%d", dstFd);
-        len = readlinkat(AT_FDCWD, dstPath, realPath, MAX_LENGTH);
+        len = sub_readlinkat(AT_FDCWD, dstPath, realPath, MAX_LENGTH);
         if (pathLen != len){
             LOGE("[-] %s %d file path length is not meeting expectations ", __FUNCTION__ , __LINE__);
             return true;

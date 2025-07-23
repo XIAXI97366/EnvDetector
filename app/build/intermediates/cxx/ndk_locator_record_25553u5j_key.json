@@ -1,0 +1,15 @@
+{
+  "ndkVersionFromDsl": "27.2.12479018",
+  "ndkPathFromDsl": "E:\\Environment_Variable\\android-ndk-r26c-windows\\android-ndk-r26c",
+  "sdkFolder": "C:\\Users\\97366\\AppData\\Local\\Android\\Sdk",
+  "sideBySideNdkFolderNames": [
+    "18.1.5063045",
+    "21.4.7075529",
+    "23.1.7779620",
+    "25.1.8937393",
+    "25.2.9519653",
+    "26.1.10909125",
+    "26.2.11394342",
+    "27.0.12077973"
+  ]
+}

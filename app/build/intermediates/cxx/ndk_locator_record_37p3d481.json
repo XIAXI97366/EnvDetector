@@ -1,0 +1,11 @@
+{
+  "ndk": "E:\\Environment_Variable\\android-ndk-r26c-windows\\android-ndk-r26c",
+  "revision": {
+    "mMajor": 26,
+    "mMinor": 2,
+    "mMicro": 11394342,
+    "mPreview": 0,
+    "mPrecision": "MICRO",
+    "mPreviewSeparator": " "
+  }
+}
