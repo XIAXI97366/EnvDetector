@@ -29,8 +29,12 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        ndkVersion = "26.2.11394342"
-        ndkPath = "E:\\Environment_Variable\\android-ndk-r26c-windows\\android-ndk-r26c"
+
+        // ndkVersion "26.2.11394342"
+        // ndkPath = "E:\\Environment_Variable\\android-ndk-r26c-windows\\android-ndk-r26c"
+
+        ndkVersion = "27.2.12479018"
+        ndkPath = "D:\\NDK\\android-ndk-r27c-windows\\android-ndk-r27c"
 
         externalNativeBuild {
             cmake {
