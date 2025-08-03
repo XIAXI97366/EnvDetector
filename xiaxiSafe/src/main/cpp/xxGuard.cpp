@@ -117,7 +117,7 @@ void apply_protect_policy() {
     pthread_t checkInject;
     pthread_t checkMaps;
 
-    pthread_create(&checkMaps, nullptr, &policy_body_checkmap, nullptr);
+    // pthread_create(&checkMaps, nullptr, &policy_body_checkmap, nullptr);
 
 //    if (g_pConfig->isInject){
 //        pthread_create(&checkInject, nullptr, &policyBodyCheckInject, nullptr);
@@ -160,9 +160,9 @@ INLINE void *policy_body_checkmap(void *_val) {
             return nullptr;
         }
 
-//        if(ck.is_map_segment_compliance()){
-//            return nullptr;
-//        }
+        if(ck.is_map_segment_compliance()){
+            return nullptr;
+        }
 
         if (check_baseapk_valid(ck.basefd, ck.basePath, sub_strlen(ck.basePath), ck.inode)){
             return nullptr;

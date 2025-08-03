@@ -6,7 +6,8 @@ import android.provider.Settings;
 
 import java.lang.reflect.Field;
 
-public class EnvUtil {
+public class EnvDetector {
+
     public static boolean isDeveloperModeEnabled(Context context) {
         return Settings.Secure.getInt(
                 context.getContentResolver(),

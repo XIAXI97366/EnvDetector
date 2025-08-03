@@ -3,10 +3,12 @@ package com.xx.shell;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.util.Log;
 
 import com.xiaxi.safe.XxSafe;
-import com.xiaxi.safe.util.EnvUtil;
+import com.xiaxi.safe.util.EnvDetector;
 
 //import com.xx.api.rposed.RC_MethodHook;
 //import com.xx.api.rposed.RposedHelpers;
@@ -22,9 +24,11 @@ public class RiskCheckApplication extends Application {
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         Reflection.unseal(base);        //使用weishu的反射库
-        Log.e("XIAXI", "DeveloperMode: " + EnvUtil.isDeveloperModeEnabled(base));
-        Log.e("XIAXI", "Adb: " + EnvUtil.isAdbEnabled(base));
-        Log.e("XIAXI", "Wifi Adb: " + EnvUtil.isAdbWifiEnabled(base));
+
+        Log.e("XIAXI", "DeveloperMode: " + EnvDetector.isDeveloperModeEnabled(base));
+        Log.e("XIAXI", "Adb: " + EnvDetector.isAdbEnabled(base));
+        Log.e("XIAXI", "Wifi Adb: " + EnvDetector.isAdbWifiEnabled(base));
+
         try {
             XxSafe.protect(this);
         } catch (NoSuchFieldException e) {
@@ -55,5 +59,7 @@ public class RiskCheckApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+
     }
 }

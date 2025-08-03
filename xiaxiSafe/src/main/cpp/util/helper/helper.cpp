@@ -635,6 +635,7 @@ const char *get_hash_2_SHA256(u_char *blockBegin, u_char *blockEnd){
     return hex_str.c_str();
 }
 
+// 通过 fd 反查是否伪造了 maps 文件
 bool check_baseapk_valid(int fd, const char *filePath, ssize_t pathLen, int inode){
     char buf[PATH_MAX] = {0};
     std::string fdPath("/proc/");
@@ -657,6 +658,7 @@ bool check_baseapk_valid(int fd, const char *filePath, ssize_t pathLen, int inod
     if (dstFd > 0){
         snprintf(dstPath, sizeof(dstPath), "/proc/self/fd/%d", dstFd);
         len = sub_readlinkat(AT_FDCWD, dstPath, realPath, MAX_LENGTH);
+        // 检查长度是否匹配
         if (pathLen != len){
             LOGE("[-] %s %d file path length is not meeting expectations ", __FUNCTION__ , __LINE__);
             return true;
@@ -686,6 +688,7 @@ bool check_baseapk_valid(int fd, const char *filePath, ssize_t pathLen, int inod
             return true;
         }
     }
+
     LOGE("[+] %s %d base.apk path is meeting expectations ", __FUNCTION__ , __LINE__);
     return false;
 }
