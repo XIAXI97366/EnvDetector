@@ -20,14 +20,16 @@ import me.weishu.reflection.Reflection;
 public class RiskCheckApplication extends Application {
     private static final int REQUEST_CODE_PERMISSION = 100;
 
+    public static String TAG = "XIAXI";
+
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         Reflection.unseal(base);        //使用weishu的反射库
 
-        Log.e("XIAXI", "DeveloperMode: " + EnvDetector.isDeveloperModeEnabled(base));
-        Log.e("XIAXI", "Adb: " + EnvDetector.isAdbEnabled(base));
-        Log.e("XIAXI", "Wifi Adb: " + EnvDetector.isAdbWifiEnabled(base));
+        Log.e(RiskCheckApplication.TAG, "DeveloperMode: " + EnvDetector.isDeveloperModeEnabled(base));
+        Log.e(RiskCheckApplication.TAG, "Adb: " + EnvDetector.isAdbEnabled(base));
+        Log.e(RiskCheckApplication.TAG, "Wifi Adb: " + EnvDetector.isAdbWifiEnabled(base));
 
         try {
             XxSafe.protect(this);
