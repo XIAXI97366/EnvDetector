@@ -1,18 +1,31 @@
 package com.xiaxi.safe.util;
 
+import android.app.admin.DevicePolicyManager;
 import android.content.pm.PackageManager;
 import android.content.Context;
 import android.os.Build;
 import android.content.SharedPreferences;
+import android.security.keystore.KeyGenParameterSpec;
 import android.util.Log;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
-import android.security.keystore.KeyProperties;
+import java.security.ProviderException;
+import java.security.spec.ECGenParameterSpec;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Objects;
 
+import android.security.keystore.KeyProperties;
 import com.xx.shell.RiskCheckApplication;
+
+import javax.security.auth.x500.X500Principal;
 
 public class AppConfig {
     private PackageManager pm = null;
@@ -84,20 +97,32 @@ public class AppConfig {
     public void doAttestation(){
         String alias = null;
         String attestKeyAlias = null;
-        boolean includeProps = hasDevicesIdAttestation();
-        boolean useAttestKey = hasAttestationKey();
-        boolean useStrongBox = hasStrongBox();
+        boolean useStrongBox = false;
+        boolean useAttestKey = false;
+        boolean includeProps = false;
+        boolean uniqueIdIncluded = false;
+        int idFlags = 0;
+        boolean useSak = false;
 
+
+
+        includeProps = hasDevicesIdAttestation();
+        useAttestKey = hasAttestationKey();
         alias = useStrongBox ? RiskCheckApplication.TAG + "_strongbox" : RiskCheckApplication.TAG;
         attestKeyAlias = useAttestKey ? alias + "_persistent" : null;
+        try{
+            // 除去 AttestationKey 和  DevicesIdAttestation 其余属性暂不支持
+            if (useAttestKey && containsAlias(attestKeyAlias)){
+                generateKeyPair(attestKeyAlias, attestKeyAlias, useStrongBox,
+                        includeProps, uniqueIdIncluded, idFlags, false);
+            }
 
-        if (useAttestKey && containsAlias(attestKeyAlias)){
-            generateKeyPair(attestKeyAlias, attestKeyAlias, useStrongBox,
-                    includeProps, uniqueIdIncluded, idFlags, false);
+            generateKeyPair(alias, attestKeyAlias, useStrongBox,useStrongBox,
+                    includeProps, uniqueIdIncluded, idFlags, useSak);
+        }catch (ProviderException e){
+
         }
 
-        generateKeyPair(alias, attestKeyAlias, useStrongBox,
-                includeProps, uniqueIdIncluded, idFlags, useSak);
 
     }
 
@@ -110,4 +135,106 @@ public class AppConfig {
             throw new IllegalStateException(e.getMessage());
         }
     }
+
+    private void generateKeyPair(String alias, String attestKeyAlias,
+                                 boolean useStrongBox, boolean includeProps,
+                                 boolean uniqueIdIncluded, int idFlags,
+                                 boolean useSak) throws Exception {
+        byte[] data = generateKeyPair2(alias, attestKeyAlias, useStrongBox,
+                includeProps, uniqueIdIncluded, idFlags, useSak);
+        if (data != null) {
+            try (ObjectInputStream  it = new ObjectInputStream((new ByteArrayInputStream(data)))) {
+                throw (Exception) it.readObject();
+            }
+        }
+    }
+
+    private byte[] generateKeyPair2(String alias,
+                                  String attestKeyAlias,
+                                  boolean useStrongBox,
+                                  boolean includeProps,
+                                  boolean uniqueIdIncluded,
+                                  int idFlags,
+                                  boolean useSak) {
+        KeyGenParameterSpec params = (KeyGenParameterSpec) genParameter(alias, attestKeyAlias, useStrongBox,
+                includeProps, uniqueIdIncluded, flagsToArray(idFlags));
+        try {
+            keyPairGenerator.initialize(params);
+            keyPairGenerator.generateKeyPair();
+            if (useSak) {
+//                var utils = new com.samsung.android.security.keystore.AttestationUtils();
+//                var spec = genSakParameter(params);
+//                Iterable<byte[]> certChain;
+//                if (spec.isDeviceAttestation()) {
+//                    certChain = utils.attestDevice(spec);
+//                } else {
+//                    certChain = utils.attestKey(spec);
+//                }
+//                utils.storeCertificateChain(alias, certChain);
+            }
+            return null;
+        } catch (Exception exception) {
+            Log.e(RiskCheckApplication.TAG, "generateKeyPair", exception);
+            ByteArrayOutputStream buf = new ByteArrayOutputStream(2048);
+            try (ObjectOutputStream out = new ObjectOutputStream(buf)) {
+                out.writeObject(exception);
+            } catch (IOException e) {
+                throw new IllegalStateException(e.getMessage());
+            }
+            return buf.toByteArray();
+        }
+    }
+
+    private Object genParameter(String alias,
+                                       String attestKeyAlias,
+                                       boolean useStrongBox,
+                                       boolean includeProps,
+                                       boolean uniqueIdIncluded,
+                                       int[] attestationIds) {
+        Date now = new Date();
+        boolean attestKey = Objects.equals(alias, attestKeyAlias);
+        int purposes = attestKey ? KeyProperties.PURPOSE_ATTEST_KEY : KeyProperties.PURPOSE_SIGN;
+
+        KeyGenParameterSpec_rename.Builder builder = new KeyGenParameterSpec_rename.Builder(alias, purposes)
+                .setAlgorithmParameterSpec(new ECGenParameterSpec("secp256r1"))
+                .setDigests(KeyProperties.DIGEST_SHA256)
+                .setCertificateNotBefore(now)
+                .setAttestationChallenge(now.toString().getBytes());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && useStrongBox) {
+            builder.setIsStrongBoxBacked(true);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (includeProps) {
+                builder.setDevicePropertiesAttestationIncluded(true);
+            }
+            if (attestationIds != null) {
+                builder.setAttestationIds(attestationIds);
+            }
+            if (attestKey) {
+                builder.setCertificateSubject(new X500Principal("CN=App Attest Key"));
+            } else {
+                builder.setAttestKeyAlias(attestKeyAlias);
+            }
+        }
+        if (uniqueIdIncluded) {
+            builder.setUniqueIdIncluded(true);
+        }
+        return builder.build();
+    }
+
+    private static int[] flagsToArray(int idFlags) {
+        int i = 0;
+        int[] array = new int[3];
+        if ((idFlags & DevicePolicyManager.ID_TYPE_SERIAL) != 0) {
+            array[i++] = 1;
+        }
+        if ((idFlags & DevicePolicyManager.ID_TYPE_IMEI) != 0) {
+            array[i++] = 2;
+        }
+        if ((idFlags & DevicePolicyManager.ID_TYPE_MEID) != 0) {
+            array[i++] = 3;
+        }
+        return Arrays.copyOf(array, i);
+    }
+
 }
