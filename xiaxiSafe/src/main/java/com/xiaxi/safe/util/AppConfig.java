@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Build;
 import android.content.SharedPreferences;
 import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.StrongBoxUnavailableException;
 import android.util.Log;
 
 import java.io.ByteArrayInputStream;
@@ -94,7 +95,7 @@ public class AppConfig {
         return false;
     }
 
-    public void doAttestation(){
+    public void doAttestation() throws AttestationException{
         String alias = null;
         String attestKeyAlias = null;
         boolean useStrongBox = false;
@@ -103,8 +104,6 @@ public class AppConfig {
         boolean uniqueIdIncluded = false;
         int idFlags = 0;
         boolean useSak = false;
-
-
 
         includeProps = hasDevicesIdAttestation();
         useAttestKey = hasAttestationKey();
@@ -120,7 +119,23 @@ public class AppConfig {
             generateKeyPair(alias, attestKeyAlias, useStrongBox,useStrongBox,
                     includeProps, uniqueIdIncluded, idFlags, useSak);
         }catch (ProviderException e){
-
+            Throwable cause = e.getCause();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+                    && e instanceof StrongBoxUnavailableException) {
+                throw new AttestationException(CODE_STRONGBOX_UNAVAILABLE, e);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                    && cause instanceof android.security.KeyStoreException keyStoreException) {
+                throw toAttestationException(keyStoreException, e);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                    && cause instanceof DeviceIdAttestationException) {
+                throw new AttestationException(CODE_DEVICEIDS_UNAVAILABLE, e);
+            } else if (cause != null && cause.toString().contains("device ids")) {
+                throw new AttestationException(CODE_DEVICEIDS_UNAVAILABLE, e);
+            } else {
+                throw new AttestationException(CODE_UNAVAILABLE, e);
+            }
+        } catch (Exception e) {
+            throw new AttestationException(CODE_UNKNOWN, e);
         }
 
 
