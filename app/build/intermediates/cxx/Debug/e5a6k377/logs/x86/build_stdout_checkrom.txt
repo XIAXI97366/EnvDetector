@@ -1,3 +1,0 @@
-ninja: Entering directory `D:\AS_Project\XIAXI\app\.cxx\Debug\e5a6k377\x86'
-[1/2] Building CXX object CMakeFiles/checkrom.dir/native-lib.cpp.o
-[2/2] Linking CXX shared library D:\AS_Project\XIAXI\app\build\intermediates\cxx\Debug\e5a6k377\obj\x86\libcheckrom.so

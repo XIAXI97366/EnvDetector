@@ -13,11 +13,11 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
 
-         // ndkVersion = "26.2.11394342"
-         // ndkPath = "E:\\Environment_Variable\\android-ndk-r26c-windows\\android-ndk-r26c"
+        ndkVersion = "26.2.11394342"
+        ndkPath = "E:\\Environment_Variable\\android-ndk-r26c-windows\\android-ndk-r26c"
 
-        ndkVersion = "27.2.12479018"
-        ndkPath = "D:\\NDK\\android-ndk-r27c-windows\\android-ndk-r27c"
+        // ndkVersion = "27.2.12479018"
+        // ndkPath = "D:\\NDK\\android-ndk-r27c-windows\\android-ndk-r27c"
 
         ndk {
             abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64" // 指定需要的架构
@@ -45,15 +45,16 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_21
-        targetCompatibility JavaVersion.VERSION_21
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     buildFeatures {
         prefab true
     }
     kotlinOptions {
-        jvmTarget = '21'
+        // jvmTarget = '21'
+        jvmTarget = '17'
     }
 }
 

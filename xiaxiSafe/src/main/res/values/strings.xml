@@ -334,8 +334,6 @@
     <string name="knox_description"><![CDATA[
     Samsung Knox Attestation is a feature that verifies a Samsung device\'s data integrity by checking that the device is not rooted or running unofficial firmware.
     ]]></string>
-    <string name="knox_challenge">@string/attestation_challenge</string>
-    <string name="knox_challenge_description">@string/attestation_challenge_description</string>
     <string name="knox_id_attest">ID attestation</string>
     <string name="knox_id_attest_description"><![CDATA[
     Check if the IMEI and serial number have been modified.

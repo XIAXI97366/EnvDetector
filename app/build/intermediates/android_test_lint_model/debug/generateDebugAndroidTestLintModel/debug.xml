@@ -1,0 +1,31 @@
+<variant
+    name="debug"
+    package="com.example.checkrom"
+    minSdkVersion="23"
+    targetSdkVersion="34"
+    debuggable="true"
+    mergedManifest="build\intermediates\merged_manifest\debug\processDebugMainManifest\AndroidManifest.xml"
+    manifestMergeReport="build\outputs\logs\manifest-merger-debug-report.txt"
+    partialResultsDir="build\intermediates\android_test_lint_partial_results\debug\lintAnalyzeDebugAndroidTest\out">
+  <buildFeatures
+      viewBinding="true"
+      namespacing="REQUIRED"/>
+  <sourceProviders>
+  </sourceProviders>
+  <testSourceProviders>
+    <sourceProvider
+        manifests="src\androidTest\AndroidManifest.xml"
+        javaDirectories="src\androidTest\java;src\androidTestDebug\java;src\androidTest\kotlin;src\androidTestDebug\kotlin"
+        resDirectories="src\androidTest\res;src\androidTestDebug\res"
+        assetsDirectories="src\androidTest\assets;src\androidTestDebug\assets"
+        androidTest="true"/>
+  </testSourceProviders>
+  <testFixturesSourceProviders>
+  </testFixturesSourceProviders>
+  <artifact
+      type="INSTRUMENTATION_TEST"
+      applicationId="com.example.checkrom.test"
+      generatedResourceFolders="build\generated\res\resValues\androidTest\debug"
+      desugaredMethodsFiles="C:\Users\97366\.gradle\caches\8.10\transforms\6f0be083c10fcfd3c760520e860cd12e\transformed\D8BackportedDesugaredMethods.txt">
+  </artifact>
+</variant>

@@ -1,22 +1,16 @@
-#Wed Aug 06 17:16:54 CST 2025
-base.0=D\:\\AS_Project\\XIAXI\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
-base.1=D\:\\AS_Project\\XIAXI\\app\\build\\intermediates\\dex\\debug\\mergeLibDexDebug\\14\\classes.dex
-base.2=D\:\\AS_Project\\XIAXI\\app\\build\\intermediates\\dex\\debug\\mergeLibDexDebug\\3\\classes.dex
-base.3=D\:\\AS_Project\\XIAXI\\app\\build\\intermediates\\dex\\debug\\mergeLibDexDebug\\8\\classes.dex
-base.4=D\:\\AS_Project\\XIAXI\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
-base.5=D\:\\AS_Project\\XIAXI\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\1\\classes.dex
-base.6=D\:\\AS_Project\\XIAXI\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\4\\classes.dex
+#Thu Aug 07 04:26:18 CST 2025
+base.0=E\:\\Custom tools\\XIAXI\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
+base.1=E\:\\Custom tools\\XIAXI\\app\\build\\intermediates\\dex\\debug\\mergeLibDexDebug\\0\\classes.dex
+base.2=E\:\\Custom tools\\XIAXI\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
+base.3=E\:\\Custom tools\\XIAXI\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\1\\classes.dex
+base.4=E\:\\Custom tools\\XIAXI\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\4\\classes.dex
 path.0=classes.dex
-path.1=14/classes.dex
-path.2=3/classes.dex
-path.3=8/classes.dex
-path.4=0/classes.dex
-path.5=1/classes.dex
-path.6=4/classes.dex
+path.1=0/classes.dex
+path.2=0/classes.dex
+path.3=1/classes.dex
+path.4=4/classes.dex
 renamed.0=classes.dex
 renamed.1=classes2.dex
 renamed.2=classes3.dex
 renamed.3=classes4.dex
 renamed.4=classes5.dex
-renamed.5=classes6.dex
-renamed.6=classes7.dex
