@@ -2,7 +2,7 @@
 2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
 3    package="com.xiaxi.safe" >
 4
-5    <uses-sdk android:minSdkVersion="21" />
+5    <uses-sdk android:minSdkVersion="23" />
 5-->E:\Custom tools\XIAXI\LSPlant\src\main\AndroidManifest.xml
 6
 7</manifest>

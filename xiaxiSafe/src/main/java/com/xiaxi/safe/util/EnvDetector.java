@@ -8,6 +8,11 @@ import java.lang.reflect.Field;
 
 public class EnvDetector {
 
+    public static boolean isBootLoaderEnabled(Context context) throws Exception {
+        AppConfig appConfig = new AppConfig(context);
+        appConfig.doAttestation();
+        return false;
+    }
     public static boolean isDeveloperModeEnabled(Context context) {
         return Settings.Secure.getInt(
                 context.getContentResolver(),

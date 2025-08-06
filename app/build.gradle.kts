@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "com.example.checkrom"
-    compileSdk = 34
+    compileSdk = 35
 
     // 开启 V1 V2 V3 V4 签名
     signingConfigs {
@@ -23,18 +23,18 @@ android {
 
     defaultConfig {
         applicationId = "com.example.checkrom"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-         ndkVersion = "26.2.11394342"
-         ndkPath = "E:\\Environment_Variable\\android-ndk-r26c-windows\\android-ndk-r26c"
+         // ndkVersion = "26.2.11394342"
+         // ndkPath = "E:\\Environment_Variable\\android-ndk-r26c-windows\\android-ndk-r26c"
 
-//        ndkVersion = "27.2.12479018"
-//        ndkPath = "D:\\NDK\\android-ndk-r27c-windows\\android-ndk-r27c"
+        ndkVersion = "27.2.12479018"
+        ndkPath = "D:\\NDK\\android-ndk-r27c-windows\\android-ndk-r27c"
 
         externalNativeBuild {
             cmake {
@@ -61,8 +61,8 @@ android {
         viewBinding = true
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 }
 

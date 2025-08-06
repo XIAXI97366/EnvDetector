@@ -1,6 +1,0 @@
-com.example.checkrom.test.app-core-1.5.0-0 C:\Users\XIAXI\.gradle\caches\8.10\transforms\1d20755abac14e50e51ea075439c5373\transformed\core-1.5.0\res
-com.example.checkrom.test.app-annotation-experimental-1.4.0-1 C:\Users\XIAXI\.gradle\caches\8.10\transforms\35f7c20d4e6380d20db98287523a7a3f\transformed\annotation-experimental-1.4.0\res
-com.example.checkrom.test.app-androidTest-2 D:\AS_Project\XIAXI\app\build\generated\res\resValues\androidTest\debug
-com.example.checkrom.test.app-mergeDebugAndroidTestResources-3 D:\AS_Project\XIAXI\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
-com.example.checkrom.test.app-mergeDebugAndroidTestResources-4 D:\AS_Project\XIAXI\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
-com.example.checkrom.test.app-merged_res-5 D:\AS_Project\XIAXI\app\build\intermediates\merged_res\debugAndroidTest

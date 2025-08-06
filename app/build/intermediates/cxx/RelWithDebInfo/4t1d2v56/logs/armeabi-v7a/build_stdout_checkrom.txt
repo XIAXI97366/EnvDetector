@@ -1,2 +1,0 @@
-ninja: Entering directory `D:\AS_Project\XIAXI\app\.cxx\RelWithDebInfo\4t1d2v56\armeabi-v7a'
-ninja: no work to do.

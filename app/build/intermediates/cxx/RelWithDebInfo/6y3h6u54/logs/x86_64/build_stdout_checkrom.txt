@@ -1,2 +1,0 @@
-ninja: Entering directory `E:\Custom tools\XIAXI\app\.cxx\RelWithDebInfo\6y3h6u54\x86_64'
-ninja: no work to do.

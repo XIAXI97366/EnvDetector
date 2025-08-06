@@ -32,10 +32,13 @@ public class RiskCheckApplication extends Application {
         Log.e(RiskCheckApplication.TAG, "Wifi Adb: " + EnvDetector.isAdbWifiEnabled(base));
 
         try {
+            Log.e(RiskCheckApplication.TAG, "BootLoader: " + EnvDetector.isBootLoaderEnabled(base));
             XxSafe.protect(this);
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 

@@ -1,5 +1,6 @@
 package com.xiaxi.safe.util;
 
+import android.annotation.SuppressLint;
 import android.app.admin.DevicePolicyManager;
 import android.content.pm.PackageManager;
 import android.content.Context;
@@ -24,9 +25,14 @@ import java.util.Date;
 import java.util.Objects;
 
 import android.security.keystore.KeyProperties;
+
+import androidx.annotation.RequiresApi;
+
 import com.xx.shell.RiskCheckApplication;
 
 import javax.security.auth.x500.X500Principal;
+
+import com.xiaxi.safe.util.AttestationException;
 
 public class AppConfig {
     private PackageManager pm = null;
@@ -53,7 +59,7 @@ public class AppConfig {
                 KeyProperties.KEY_ALGORITHM_EC, "AndroidKeyStore");
     }
 
-    public boolean hasStrongBox(){
+    private boolean hasStrongBox(){
         if (null != pm){
             // StrongBox Keymaster 是 Android 提供的一个 基于硬件的密钥保护机制，它运行在一个受信任环境中（如 TEE 或独立的安全元件 Secure Element）
             // | 功能             | 描述                                 |
@@ -115,30 +121,27 @@ public class AppConfig {
                 generateKeyPair(attestKeyAlias, attestKeyAlias, useStrongBox,
                         includeProps, uniqueIdIncluded, idFlags, false);
             }
-
-            generateKeyPair(alias, attestKeyAlias, useStrongBox,useStrongBox,
+            generateKeyPair(alias, attestKeyAlias, useStrongBox,
                     includeProps, uniqueIdIncluded, idFlags, useSak);
         }catch (ProviderException e){
             Throwable cause = e.getCause();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
                     && e instanceof StrongBoxUnavailableException) {
-                throw new AttestationException(CODE_STRONGBOX_UNAVAILABLE, e);
+                throw new AttestationException(AttestationException.CODE_STRONGBOX_UNAVAILABLE, e);
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
                     && cause instanceof android.security.KeyStoreException keyStoreException) {
                 throw toAttestationException(keyStoreException, e);
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-                    && cause instanceof DeviceIdAttestationException) {
-                throw new AttestationException(CODE_DEVICEIDS_UNAVAILABLE, e);
+                    && cause instanceof Exception) {
+                throw new AttestationException(AttestationException.CODE_DEVICEIDS_UNAVAILABLE, e);
             } else if (cause != null && cause.toString().contains("device ids")) {
-                throw new AttestationException(CODE_DEVICEIDS_UNAVAILABLE, e);
+                throw new AttestationException(AttestationException.CODE_DEVICEIDS_UNAVAILABLE, e);
             } else {
-                throw new AttestationException(CODE_UNAVAILABLE, e);
+                throw new AttestationException(AttestationException.CODE_UNAVAILABLE, e);
             }
         } catch (Exception e) {
-            throw new AttestationException(CODE_UNKNOWN, e);
+            throw new AttestationException(AttestationException.CODE_UNKNOWN, e);
         }
-
-
     }
 
 
@@ -210,7 +213,7 @@ public class AppConfig {
         boolean attestKey = Objects.equals(alias, attestKeyAlias);
         int purposes = attestKey ? KeyProperties.PURPOSE_ATTEST_KEY : KeyProperties.PURPOSE_SIGN;
 
-        KeyGenParameterSpec_rename.Builder builder = new KeyGenParameterSpec_rename.Builder(alias, purposes)
+        var builder = new KeyGenParameterSpec_rename.Builder(alias, purposes)
                 .setAlgorithmParameterSpec(new ECGenParameterSpec("secp256r1"))
                 .setDigests(KeyProperties.DIGEST_SHA256)
                 .setCertificateNotBefore(now)
@@ -237,7 +240,7 @@ public class AppConfig {
         return builder.build();
     }
 
-    private static int[] flagsToArray(int idFlags) {
+    private int[] flagsToArray(int idFlags) {
         int i = 0;
         int[] array = new int[3];
         if ((idFlags & DevicePolicyManager.ID_TYPE_SERIAL) != 0) {
@@ -252,4 +255,31 @@ public class AppConfig {
         return Arrays.copyOf(array, i);
     }
 
+
+    @SuppressLint("SwitchIntDef")
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private AttestationException toAttestationException(android.security.KeyStoreException exception,
+                                                               Exception e) {
+        int code = exception.getNumericErrorCode();
+        if (code == android.security.KeyStoreException.ERROR_ID_ATTESTATION_FAILURE) {
+            return new AttestationException(AttestationException.CODE_DEVICEIDS_UNAVAILABLE, e);
+        }
+        if (code >= android.security.KeyStoreException.ERROR_ATTESTATION_KEYS_UNAVAILABLE) {
+            if (exception.isTransientFailure()) {
+                return new AttestationException(AttestationException.CODE_OUT_OF_KEYS_TRANSIENT, e);
+            } else {
+                return new AttestationException(AttestationException.CODE_OUT_OF_KEYS, e);
+            }
+        }
+        if (code == android.security.KeyStoreException.ERROR_KEYMINT_FAILURE) {
+            if (exception.toString().contains("ATTESTATION_KEYS_NOT_PROVISIONED")) {
+                return new AttestationException(AttestationException.CODE_KEYS_NOT_PROVISIONED, e);
+            }
+        }
+        if (exception.isTransientFailure()) {
+            return new AttestationException(AttestationException.CODE_UNAVAILABLE_TRANSIENT, e);
+        } else {
+            return new AttestationException(AttestationException.CODE_UNAVAILABLE, e);
+        }
+    }
 }
