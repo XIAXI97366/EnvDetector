@@ -1,3 +1,12 @@
+import com.android.build.api.instrumentation.AsmClassVisitorFactory
+import com.android.build.api.instrumentation.ClassContext
+import com.android.build.api.instrumentation.ClassData
+import com.android.build.api.instrumentation.InstrumentationParameters
+import com.android.build.api.instrumentation.InstrumentationScope
+import org.objectweb.asm.ClassVisitor
+import org.objectweb.asm.commons.ClassRemapper
+import org.objectweb.asm.commons.Remapper
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -111,3 +120,32 @@ tasks.whenTaskAdded { task ->
         task.finalizedBy(generateDex)
     }
 }
+
+androidComponents {
+    onVariants(selector().all(), {
+        instrumentation.transformClassesWith(ClassVisitorFactory.class,
+                InstrumentationScope.PROJECT) {}
+    })
+}
+
+abstract class ClassVisitorFactory implements AsmClassVisitorFactory<InstrumentationParameters.None> {
+    ClassVisitor createClassVisitor(ClassContext classContext, ClassVisitor classVisitor) {
+        return new ClassRemapper(classVisitor, new Remapper() {
+            String map(String name) {
+                var index = name.indexOf('$')
+                if (index != -1) {
+                    return map(name.substring(0, index)) + name.substring(index)
+                }
+                if (name.endsWith("_rename")) {
+                    return name.substring(0, name.length() - 7)
+                }
+                return name
+            }
+        })
+    }
+
+    boolean isInstrumentable(ClassData classData) {
+        return classData.className.startsWith("com.xiaxi.safe.util.")
+    }
+}
+

@@ -31,3 +31,4 @@ dependencyResolutionManagement {
 rootProject.name = "checkROM"
 include(":app")
 include(":xiaxiSafe")
+include(":stub")

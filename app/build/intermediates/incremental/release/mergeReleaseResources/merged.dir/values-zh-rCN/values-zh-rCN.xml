@@ -34,7 +34,7 @@
     <string name="about">关于</string>
     <string name="aosp_root_cert">AOSP 软件认证根证书</string>
     <string name="aosp_root_cert_summary">认证密钥的私钥众所周知，证书链可以被篡改。</string>
-    <string name="app_name">密钥认证</string>
+    <string name="app_name">EnvDetector</string>
     <string name="attest_device_props">认证设备型号</string>
     <string name="attestation">认证</string>
     <string name="attestation_challenge">认证质询</string>
