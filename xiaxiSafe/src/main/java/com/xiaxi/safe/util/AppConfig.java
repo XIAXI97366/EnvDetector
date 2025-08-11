@@ -7,6 +7,7 @@ import android.content.Context;
 import android.os.Build;
 import android.content.SharedPreferences;
 import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyGenParameterSpec_rename;
 import android.security.keystore.StrongBoxUnavailableException;
 import android.util.Log;
 
