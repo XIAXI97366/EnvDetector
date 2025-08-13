@@ -118,7 +118,7 @@ public class AppConfig {
         attestKeyAlias = useAttestKey ? alias + "_persistent" : null;
         try{
             // 除去 AttestationKey 和  DevicesIdAttestation 其余属性暂不支持
-            if (useAttestKey && containsAlias(attestKeyAlias)){
+            if (useAttestKey && !containsAlias(attestKeyAlias)){
                 generateKeyPair(attestKeyAlias, attestKeyAlias, useStrongBox,
                         includeProps, uniqueIdIncluded, idFlags, false);
             }

@@ -21,26 +21,19 @@ public class RiskCheckApplication extends Application {
     private static final int REQUEST_CODE_PERMISSION = 100;
 
     public static String TAG = "XIAXI";
+    public Context appContext = null;
 
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
+        appContext = base;
         Reflection.unseal(base);        //使用weishu的反射库
 
         Log.e(RiskCheckApplication.TAG, "DeveloperMode: " + EnvDetector.isDeveloperModeEnabled(base));
         Log.e(RiskCheckApplication.TAG, "Adb: " + EnvDetector.isAdbEnabled(base));
         Log.e(RiskCheckApplication.TAG, "Wifi Adb: " + EnvDetector.isAdbWifiEnabled(base));
 
-        try {
-            Log.e(RiskCheckApplication.TAG, "BootLoader: " + EnvDetector.isBootLoaderEnabled(base));
-            XxSafe.protect(this);
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+
 
 
 //        ClassLoader classLoader = base.getClassLoader();
@@ -65,6 +58,20 @@ public class RiskCheckApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        try {
+            // 要放在 kApplication 的 onCreate 中，attachBaseContext 时间过早
+                // Context 可能还没有完全初始化
+                // 某些系统服务可能还不可用
+                // PackageManager 等系统组件可能还未准备好
+            Log.e(RiskCheckApplication.TAG, "BootLoader: " + EnvDetector.isBootLoaderEnabled(appContext));
+            XxSafe.protect(this);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
     }
 }
