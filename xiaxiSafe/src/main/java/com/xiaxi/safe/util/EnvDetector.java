@@ -9,7 +9,7 @@ import java.lang.reflect.Field;
 public class EnvDetector {
 
     public static boolean isBootLoaderEnabled(Context context) throws Exception {
-        AppConfig appConfig = new AppConfig(context);
+        KeyAttestation appConfig = new KeyAttestation(context);
         appConfig.doAttestation();
         return false;
     }
