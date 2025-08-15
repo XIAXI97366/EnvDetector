@@ -14,7 +14,7 @@ public class AttestationData {
     }
 
     /**
-     * 该函数用于对证书链中的证书进行排序
+     * 该函数用于对证书链中的证书进行排序（叶子 → 中间 → 根）
      * @param certs
      * @return
      */
