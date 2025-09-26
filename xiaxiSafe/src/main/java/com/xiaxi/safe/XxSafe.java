@@ -232,8 +232,5 @@ public class XxSafe {
         protect(application, process, application.getAssets());
     }
 
-
-
     private static native void protect(Application application, XxEventProcess process, AssetManager manager);
-
 }

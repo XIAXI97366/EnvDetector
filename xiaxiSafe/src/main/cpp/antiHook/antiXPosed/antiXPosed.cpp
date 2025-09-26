@@ -23,59 +23,101 @@ int antiXPosed::check_model() {
 }
 
 bool antiXPosed::check_stack(JNIEnv *env) {
-    jclass clsThread = env->FindClass("java/lang/Thread");
-    jmethodID midCurrentThread = env->GetStaticMethodID(clsThread, "currentThread",
-                                                         "()Ljava/lang/Thread;");
-    jobject objThread = env->CallStaticObjectMethod(clsThread, midCurrentThread);
-    jmethodID midGetStackTrace = env->GetMethodID(clsThread, "getStackTrace",
-                                                  "()[Ljava/lang/StackTraceElement;");
-    jobjectArray objStackTraceElementArray = static_cast<jobjectArray>(env->CallObjectMethod(objThread,
-                                                                                        midGetStackTrace));
-    jsize arrayLength = env->GetArrayLength(objStackTraceElementArray);
-    jobject objStackTraceElement0 = env->GetObjectArrayElement(objStackTraceElementArray,
+    jobject objThread = nullptr;
+    jobjectArray objStackTraceElementArray = nullptr;
+    jsize arrayLength = 0;
+    jobject objStackTraceElement0 = nullptr;
+    jstring targetString0 = nullptr;
+    const char* c_targetString0 = nullptr;
+    jobject objStackTraceElement1 = nullptr;
+    jstring targetString1 = nullptr;
+    const char* c_targetString1 = nullptr;
+    bool state = false;
+
+    state = invoke_func()->callStaticObjectMethod(env, &objThread, "java/lang/Thread", "()Ljava/lang/Thread;",
+                                                  "currentThread");
+    if (!state || nullptr == objThread){
+        LOGE("[-] %s %d invoke_func()->callStaticObjectMethod faild ", __FUNCTION__ , __LINE__);
+        return state;
+    }
+
+    state = invoke_func()->callObjectMethod(env, (jobject *)&objStackTraceElementArray, "java/lang/Thread",
+                                            objThread, "()[Ljava/lang/StackTraceElement;", "getStackTrace");
+    if (!state || nullptr == objStackTraceElementArray){
+        LOGE("[-] %s %d invoke_func()->callObjectMethod faild ", __FUNCTION__ , __LINE__);
+        return state;
+    }
+
+    arrayLength = env->GetArrayLength(objStackTraceElementArray);
+    objStackTraceElement0 = env->GetObjectArrayElement(objStackTraceElementArray,
                                                               (unsigned int)(arrayLength - 1));
-    jclass clsStackTraceElement = env->FindClass("java/lang/StackTraceElement");
-    jmethodID midGetClassName = env->GetMethodID(clsStackTraceElement, "getClassName",
-                                                 "()Ljava/lang/String;");
-    jstring targetString0 = (jstring)env->CallObjectMethod(objStackTraceElement0, midGetClassName);
-    const char* c_targetString0 = env->GetStringUTFChars(targetString0, 0LL);
-    jobject objStackTraceElement1 = env->GetObjectArrayElement(objStackTraceElementArray, (arrayLength - 2));
-    jstring targetString1 = (jstring)env->CallObjectMethod(objStackTraceElement1, midGetClassName);
-    const char* c_targetString2 = env->GetStringUTFChars(targetString1, 0LL);
+    state = invoke_func()->callObjectMethod(env, (jobject *)&targetString0, "java/lang/StackTraceElement",
+                                            objStackTraceElement0, "()Ljava/lang/String;", "getClassName");
+    if (!state || nullptr == targetString0){
+        LOGE("[-] %s %d invoke_func()->callObjectMethod faild ", __FUNCTION__ , __LINE__);
+        return state;
+    }
+    c_targetString0 = env->GetStringUTFChars(targetString0, 0LL);
+
+    objStackTraceElement1 = env->GetObjectArrayElement(objStackTraceElementArray, (arrayLength - 2));
+    state = invoke_func()->callObjectMethod(env, (jobject *)targetString1, "java/lang/StackTraceElement",
+                                            objStackTraceElement1, "()Ljava/lang/String;", "getClassName");
+    if (!state || nullptr == targetString1){
+        LOGE("[-] %s %d invoke_func()->callObjectMethod faild ", __FUNCTION__ , __LINE__);
+        return state;
+    }
+    c_targetString1 = env->GetStringUTFChars(targetString1, 0LL);
+
     if((strcasestr((char*)(c_targetString0), "xposed") ||
-        strcasestr((char*)(c_targetString2), "xposed")) != 0){
+        strcasestr((char*)(c_targetString1), "xposed")) != 0){
         return true;
     }
     return false;
 }
 
 bool antiXPosed::check_class(JNIEnv *env) {
-    jclass clsClassLoader = env->FindClass("java/lang/ClassLoader");
-    jmethodID midGetSystemClassLoader = env->GetStaticMethodID(clsClassLoader, "getSystemClassLoader",
-                                                               "()Ljava/lang/ClassLoader;");
-    jobject objSystemClassLoader = env->CallStaticObjectMethod(clsClassLoader, midGetSystemClassLoader);
-    jmethodID midLoadClass = env->GetMethodID(clsClassLoader, "loadClass",
-                                              "(Ljava/lang/String;)Ljava/lang/Class;");
-    jstring checkClass = env->NewStringUTF("de.robv.android.xposed.XposedHelpers");
-    if (env->CallObjectMethod(objSystemClassLoader, midLoadClass, checkClass) &&
-        !env->ExceptionCheck()){
+    jobject objSystemClassLoader = nullptr;
+    jobject objClass = nullptr;
+    jstring dstClass = nullptr;
+    bool state = false;
+
+    state = invoke_func()->callStaticObjectMethod(env, &objSystemClassLoader, "java/lang/ClassLoader",
+                                                                 "()Ljava/lang/ClassLoader;", "getSystemClassLoader");
+    if (!state || nullptr == objSystemClassLoader){
+        LOGE("[-] %s %d invoke_func()->callStaticObjectMethod faild ", __FUNCTION__ , __LINE__);
+        return state;
+    }
+
+    dstClass = env->NewStringUTF("de.robv.android.xposed.XposedHelpers");
+    state = invoke_func()->callObjectMethod(env, &objClass, "java/lang/ClassLoader", objSystemClassLoader,
+                                    "(Ljava/lang/String;)Ljava/lang/Class;", "loadClass", dstClass);
+    if (!state){
+        LOGE("[-] %s %d invoke_func()->callObjectMethod faild ", __FUNCTION__ , __LINE__);
+        return state;
+    }
+
+    if (nullptr == objClass){
         return true;
     }
-    env->ExceptionClear();
     return false;
 }
 
 bool antiXPosed::check_service(JNIEnv *env) {
-    jclass clsServiceManager = env->FindClass("android/os/ServiceManager");
-    jmethodID midGetService = env->GetStaticMethodID(clsServiceManager, "getService",
-                                                     "(Ljava/lang/String;)Landroid/os/IBinder;");
-    jstring serviceName= env->NewStringUTF("user.xposed.system");
-    if ( env->CallStaticObjectMethod(clsServiceManager, midGetService, serviceName)
-        && !env->ExceptionCheck()){
+    jstring serviceName = nullptr;
+    jobject objServer = nullptr;
+    bool state = false;
+
+    serviceName = env->NewStringUTF("user.xposed.system");
+    state = invoke_func()->callStaticObjectMethod(env, &objServer, "android/os/ServiceManager",
+                                                  "(Ljava/lang/String;)Landroid/os/IBinder;", "getService");
+    if (!state){
+        LOGE("[-] %s %d invoke_func()->callStaticObjectMethod faild ", __FUNCTION__ , __LINE__);
+        return state;
+    }
+
+    if (nullptr == objServer){
         return true;
     }
-    env->ExceptionDescribe();
-    env->ExceptionClear();
     return false;
 }
 
@@ -86,7 +128,7 @@ bool antiXPosed::check_maps() {
     char *tmp = nullptr;
     bool flag = false;
 
-    snprintf(buffer, sizeof(buffer), "/proc/%d/status", getpid());
+    snprintf(buffer, sizeof(buffer), "/proc/%d/maps", getpid());
     fp = fopen(buffer, "r");
     if (nullptr == fp){
         goto CHECK_MAPS_EXIT;

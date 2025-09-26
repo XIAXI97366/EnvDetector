@@ -671,12 +671,13 @@ int antiPlt::check_mem_rel_dyn_value_is_hooked(elf_dyn_info *self, UPOINT symAdd
 }
 
 int antiPlt::check_rel_android(elf_dyn_info *self) {
-    LOGD("暂不支持 DT_ANDROID_REL or DT_ANDROID_RELA");
-    return 0;
     if (0 == self->relandroid || 0 == self->relandroid_sz){
         LOGD("DT_ANDROID_REL or DT_ANDROID_RELA is nullptr");
         return 0;
     }
+
+    LOGD("暂不支持 DT_ANDROID_REL or DT_ANDROID_RELA");
+    return 0;
 }
 
 int antiPlt::check_rel_customize_sym_is_hooked(elf_dyn_info *mmap, elf_dyn_info *mem, int plt_or_dyn, UPOINT symAddr, size_t num) {

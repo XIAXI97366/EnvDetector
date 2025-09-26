@@ -3,6 +3,7 @@
 //
 
 #include "romEnv.h"
+#include "../rootOfTrust/rootOfTrust.h"
 
 char magisk[32] = {'/', 'd', 'a', 't', 'a', '/', 'd', 'a', 't',
                    'a', '/', 'c', 'o', 'm', '.', 't', 'o',
@@ -18,6 +19,7 @@ char *dangerApp[2] = {magisk, kernelsu};
 bool romEnv::check_inline_code_flag() {
     char buffer[BUFFER_LEN] = {0};
 
+    // dalvik-vm-dex2oat-flags --inline-max-code-uits=0 为了hook更多的函数所以要取消函数优化（如：内联）
     get_rom_property("dalvik.vm.dex2oat-flags", buffer);
     if (!sub_strlen(buffer)){
         return false;
@@ -59,6 +61,7 @@ bool romEnv::check_danger_app() {
     return false;
 }
 
+// 通过属性判断当前设备是否开启adb
 bool romEnv::check_usb_debug1() {
     //    getprop | grep init.svc.adbd
     //    [init.svc.adbd]: [running]
@@ -73,27 +76,14 @@ bool romEnv::check_usb_debug1() {
             return true;
         }
     }
+
+    //    getprop | grep usb
+    //    [persist.sys.usb.config]: [adb]   // 该值为adb，目前只发现为pixel设备
+    //    [persist.sys.usb.config]: []  // 该属性在一加设备上无效
+
     return false;
 }
 
-
-bool romEnv::check_usb_debug2(){
-    //    getprop | grep usb
-    //    [persist.sys.usb.config]: [adb]
-    //    [persist.sys.usb.config]: []
-
-    char buffer[BUFFER_LEN] = {0};
-    get_rom_property("persist.sys.usb.config", buffer);
-    if (!sub_strlen(buffer)){
-        return false;
-    }else{
-        if (!sub_strncmp(buffer, "adb", sub_strlen("adb"))){
-            LOGD("persist.sys.usb.config -> %s ", buffer);
-            return true;
-        }
-    }
-    return false;
-};
 // sys.oem_unlock_allowed
 bool romEnv::check_bl_enabled1() {
     //getprop ro.boot.vbmeta.device_state 如果未解锁的，那么内容就是 locked，已解锁则是 unlocked
@@ -107,13 +97,15 @@ bool romEnv::check_bl_enabled1() {
     }
 }
 
-// 通过密钥认证来检测是否开启引导程序
-bool romEnv::check_bl_enabled2() {
-
-    return false;
+// 通过密钥认证来验证是否开启引导程序
+bool romEnv::check_bl_enabled2(JNIEnv *env, jobject keyAttestaion) {
+    RootOfTrust rootOfTrust;
+    return rootOfTrust.ParseCertificateChain(env, rootOfTrust.GetCertificateChain(env, keyAttestaion));
 }
 
 bool romEnv::check_rom_userdebug() {
+    // 通过 maps 中的 /dev/__properties__/property_info 获取 prop_info，再获取下方设备指纹
+    // /system/build.prop
     /*
         [ro.build.tags]: [release-keys]
         [ro.product.build.tags]: [release-keys]
@@ -121,9 +113,82 @@ bool romEnv::check_rom_userdebug() {
         [ro.system_ext.build.tags]: [release-keys]
         [ro.vendor.build.tags]: [release-keys]
         [ro.build.fingerprint]: [google/oriole/oriole:13/TQ2A.230505.002/9891397:user/release-keys]
-        检测如上属性，查看当前的rom是否为userdebug
+        检测如上属性，查看当前的rom是否为userdebug（test-keys）
      */
 
 }
 
-bool romEnv::checkr_rom_customize() {}
+bool romEnv::checkr_rom_customize() {
+
+
+}
+
+std::string romEnv::getDeviceBrand() {
+    char buf[MAX_LENGTH] = {0};
+    std::string brand = "";
+
+    get_rom_property("ro.product.vendor.brand", buf);
+    if (0 == sub_strlen(buf)){
+        LOGD("get ro.product.vendor.brand value is null ");
+    }else{
+        brand = brand + buf;
+    }
+
+    return brand;
+}
+
+std::string romEnv::getDeviceDevice() {
+    char buf[MAX_LENGTH] = {0};
+    std::string device = "";
+
+    get_rom_property("ro.product.vendor.device", buf);
+    if (0 == sub_strlen(buf)){
+        LOGD("ro.product.vendor.device value is null ");
+    }else{
+        device = device + buf;
+    }
+
+    return device;
+}
+
+std::string romEnv::getDeviceManufacturer() {
+    char buf[MAX_LENGTH] = {0};
+    std::string manufacturer = "";
+
+    get_rom_property("ro.product.vendor.manufacturer", buf);
+    if (0 == sub_strlen(buf)){
+        LOGD("ro.product.vendor.manufacturer value is null ");
+    }else{
+        manufacturer = manufacturer + buf;
+    }
+
+    return manufacturer;
+}
+
+std::string romEnv::getDeviceModel() {
+    char buf[MAX_LENGTH] = {0};
+    std::string model = "";
+
+    get_rom_property("ro.product.vendor.model", buf);
+    if (0 == sub_strlen(buf)){
+        LOGD("ro.product.vendor.model value is null ");
+    }else{
+        model = model + buf;
+    }
+
+    return model;
+}
+
+std::string romEnv::getDeviceProduct() {
+    char buf[MAX_LENGTH] = {0};
+    std::string name = "";
+
+    get_rom_property("ro.product.vendor.name", buf);
+    if (0 == sub_strlen(buf)){
+        LOGD("ro.product.vendor.name value is null ");
+    }else{
+        name = name + buf;
+    }
+
+    return name;
+}

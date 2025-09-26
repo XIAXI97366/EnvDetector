@@ -1,38 +1,39 @@
-com.example.checkrom.app-lifecycle-viewmodel-savedstate-2.6.2-0 C:\Users\97366\.gradle\caches\8.10\transforms\07193733bd1e3ce8e5a5afa9384f82c4\transformed\lifecycle-viewmodel-savedstate-2.6.2\res
-com.example.checkrom.app-core-viewtree-1.0.0-1 C:\Users\97366\.gradle\caches\8.10\transforms\0acb21076dac5e3dd46ff4164df1f390\transformed\core-viewtree-1.0.0\res
-com.example.checkrom.app-tracing-1.2.0-2 C:\Users\97366\.gradle\caches\8.10\transforms\1226fb07b54505db95528273b4649f58\transformed\tracing-1.2.0\res
-com.example.checkrom.app-material-1.12.0-3 C:\Users\97366\.gradle\caches\8.10\transforms\15e2060ab968585c66418a64b1f7d032\transformed\material-1.12.0\res
-com.example.checkrom.app-appcompat-1.6.1-4 C:\Users\97366\.gradle\caches\8.10\transforms\1a5e618b8f572c0c0ad317dfe151fefc\transformed\appcompat-1.6.1\res
-com.example.checkrom.app-emoji2-1.2.0-5 C:\Users\97366\.gradle\caches\8.10\transforms\2b8d371232208c9035e7249a89011f2a\transformed\emoji2-1.2.0\res
-com.example.checkrom.app-core-1.16.0-6 C:\Users\97366\.gradle\caches\8.10\transforms\39d7249dfb2c4949b28894f836eb1d8c\transformed\core-1.16.0\res
-com.example.checkrom.app-profileinstaller-1.3.0-7 C:\Users\97366\.gradle\caches\8.10\transforms\3be5d73a8f2f2951f88579a20ff85b2c\transformed\profileinstaller-1.3.0\res
-com.example.checkrom.app-cardview-1.0.0-8 C:\Users\97366\.gradle\caches\8.10\transforms\3d31ba68ac87ccf5cdc0856a7ce33409\transformed\cardview-1.0.0\res
-com.example.checkrom.app-coordinatorlayout-1.1.0-9 C:\Users\97366\.gradle\caches\8.10\transforms\40102604d8ce00ace5fcaf353c89da9b\transformed\coordinatorlayout-1.1.0\res
-com.example.checkrom.app-core-runtime-2.2.0-10 C:\Users\97366\.gradle\caches\8.10\transforms\59195f4f26b36bec423bad14eb413572\transformed\core-runtime-2.2.0\res
-com.example.checkrom.app-constraintlayout-2.1.4-11 C:\Users\97366\.gradle\caches\8.10\transforms\5ba1e2da6527871dbf32e589bf64af88\transformed\constraintlayout-2.1.4\res
-com.example.checkrom.app-savedstate-1.2.1-12 C:\Users\97366\.gradle\caches\8.10\transforms\6b1ece7664a716017116e04e7753cd2d\transformed\savedstate-1.2.1\res
-com.example.checkrom.app-recyclerview-1.1.0-13 C:\Users\97366\.gradle\caches\8.10\transforms\730f03ae807da8991b77f3848e6d5cf9\transformed\recyclerview-1.1.0\res
-com.example.checkrom.app-transition-1.5.0-14 C:\Users\97366\.gradle\caches\8.10\transforms\75669c1d0db2c35e15ffcf7d0bbbc774\transformed\transition-1.5.0\res
-com.example.checkrom.app-appcompat-resources-1.6.1-15 C:\Users\97366\.gradle\caches\8.10\transforms\79227273a9f5158d114c69805cd6027a\transformed\appcompat-resources-1.6.1\res
-com.example.checkrom.app-drawerlayout-1.1.1-16 C:\Users\97366\.gradle\caches\8.10\transforms\8730ee17e70f1f3e13b1188b09c386fa\transformed\drawerlayout-1.1.1\res
-com.example.checkrom.app-annotation-experimental-1.4.1-17 C:\Users\97366\.gradle\caches\8.10\transforms\882f2a2d2bed3b61a88dfb3370218a73\transformed\annotation-experimental-1.4.1\res
-com.example.checkrom.app-viewpager2-1.0.0-18 C:\Users\97366\.gradle\caches\8.10\transforms\8a92e0a76d1456af970e28875cb7792c\transformed\viewpager2-1.0.0\res
-com.example.checkrom.app-startup-runtime-1.1.1-19 C:\Users\97366\.gradle\caches\8.10\transforms\a5ddb3d2a2104d5269a8fe48400b3f9e\transformed\startup-runtime-1.1.1\res
-com.example.checkrom.app-lifecycle-viewmodel-2.6.2-20 C:\Users\97366\.gradle\caches\8.10\transforms\b0fe017dff15450e0f1f8520c208d49b\transformed\lifecycle-viewmodel-2.6.2\res
-com.example.checkrom.app-lifecycle-runtime-2.6.2-21 C:\Users\97366\.gradle\caches\8.10\transforms\b1308bda6e3afbc8d29d12a2fc4eb00d\transformed\lifecycle-runtime-2.6.2\res
-com.example.checkrom.app-emoji2-views-helper-1.2.0-22 C:\Users\97366\.gradle\caches\8.10\transforms\b349de7a1c3331c98bf2a9e6647a203e\transformed\emoji2-views-helper-1.2.0\res
-com.example.checkrom.app-fragment-1.3.6-23 C:\Users\97366\.gradle\caches\8.10\transforms\b5e25c3edb7bd277cc2bcfcade3e1ccb\transformed\fragment-1.3.6\res
-com.example.checkrom.app-activity-1.8.0-24 C:\Users\97366\.gradle\caches\8.10\transforms\c6ae9b73bcdd86c417fc6d855df15e4e\transformed\activity-1.8.0\res
-com.example.checkrom.app-FreeReflection-3.1.0-25 C:\Users\97366\.gradle\caches\8.10\transforms\c9ac411269b1e3c0c9a064e46c1b0e96\transformed\FreeReflection-3.1.0\res
-com.example.checkrom.app-lifecycle-process-2.6.2-26 C:\Users\97366\.gradle\caches\8.10\transforms\df3215b6e60630f719b3bf15a60fc237\transformed\lifecycle-process-2.6.2\res
-com.example.checkrom.app-lifecycle-livedata-2.6.2-27 C:\Users\97366\.gradle\caches\8.10\transforms\eca74f6c64d2ff6a1cee5513f25ec4b2\transformed\lifecycle-livedata-2.6.2\res
-com.example.checkrom.app-lifecycle-livedata-core-2.6.2-28 C:\Users\97366\.gradle\caches\8.10\transforms\f8e0deb3a6e9e4df4d2d4d5dc509e936\transformed\lifecycle-livedata-core-2.6.2\res
-com.example.checkrom.app-core-ktx-1.16.0-29 C:\Users\97366\.gradle\caches\8.10\transforms\ffbc0ece6c0e6aee24c080f9e8c1242a\transformed\core-ktx-1.16.0\res
-com.example.checkrom.app-pngs-30 E:\Custom tools\XIAXI\app\build\generated\res\pngs\release
-com.example.checkrom.app-resValues-31 E:\Custom tools\XIAXI\app\build\generated\res\resValues\release
-com.example.checkrom.app-packageReleaseResources-32 E:\Custom tools\XIAXI\app\build\intermediates\incremental\release\packageReleaseResources\merged.dir
-com.example.checkrom.app-packageReleaseResources-33 E:\Custom tools\XIAXI\app\build\intermediates\incremental\release\packageReleaseResources\stripped.dir
-com.example.checkrom.app-release-34 E:\Custom tools\XIAXI\app\build\intermediates\merged_res\release\mergeReleaseResources
-com.example.checkrom.app-main-35 E:\Custom tools\XIAXI\app\src\main\res
-com.example.checkrom.app-release-36 E:\Custom tools\XIAXI\app\src\release\res
-com.example.checkrom.app-release-37 E:\Custom tools\XIAXI\xiaxiSafe\build\intermediates\packaged_res\release\packageReleaseResources
+com.xiaxi.safety.app-savedstate-1.2.1-0 /Users/xiaxi/.gradle/caches/8.14.3/transforms/0be303d4ec798f039f26cf68fe420d7d/transformed/savedstate-1.2.1/res
+com.xiaxi.safety.app-lifecycle-viewmodel-2.6.2-1 /Users/xiaxi/.gradle/caches/8.14.3/transforms/10e817a1bee57e7baefa5f9529cc0f7b/transformed/lifecycle-viewmodel-2.6.2/res
+com.xiaxi.safety.app-lifecycle-runtime-2.6.2-2 /Users/xiaxi/.gradle/caches/8.14.3/transforms/1a06a7570a3dad91adbe1189d176933a/transformed/lifecycle-runtime-2.6.2/res
+com.xiaxi.safety.app-transition-1.5.0-3 /Users/xiaxi/.gradle/caches/8.14.3/transforms/2c87812a6d78b1b006fa10ae93deb7b3/transformed/transition-1.5.0/res
+com.xiaxi.safety.app-core-viewtree-1.0.0-4 /Users/xiaxi/.gradle/caches/8.14.3/transforms/2dba5215f129f40fbb1ee16533f6fecc/transformed/core-viewtree-1.0.0/res
+com.xiaxi.safety.app-annotation-experimental-1.4.1-5 /Users/xiaxi/.gradle/caches/8.14.3/transforms/495ccd63d0b834c480a47ef31bf861dd/transformed/annotation-experimental-1.4.1/res
+com.xiaxi.safety.app-recyclerview-1.1.0-6 /Users/xiaxi/.gradle/caches/8.14.3/transforms/5901401acc3f386ab64b4e25bdffdf0e/transformed/recyclerview-1.1.0/res
+com.xiaxi.safety.app-cardview-1.0.0-7 /Users/xiaxi/.gradle/caches/8.14.3/transforms/800954c697110ee3033fdbd2747975a7/transformed/cardview-1.0.0/res
+com.xiaxi.safety.app-fragment-1.3.6-8 /Users/xiaxi/.gradle/caches/8.14.3/transforms/80f91fcb654c3fcee2f1806ae1dbecde/transformed/fragment-1.3.6/res
+com.xiaxi.safety.app-emoji2-views-helper-1.2.0-9 /Users/xiaxi/.gradle/caches/8.14.3/transforms/8547c108f48247932ba085736e25c106/transformed/emoji2-views-helper-1.2.0/res
+com.xiaxi.safety.app-core-ktx-1.17.0-10 /Users/xiaxi/.gradle/caches/8.14.3/transforms/90e79caab473069554ce4ecb33587420/transformed/core-ktx-1.17.0/res
+com.xiaxi.safety.app-startup-runtime-1.1.1-11 /Users/xiaxi/.gradle/caches/8.14.3/transforms/9aaad13a02ded2906134e77b07f01fc7/transformed/startup-runtime-1.1.1/res
+com.xiaxi.safety.app-profileinstaller-1.3.0-12 /Users/xiaxi/.gradle/caches/8.14.3/transforms/9cdad44ae13d1fc6ef2ee080c535ef99/transformed/profileinstaller-1.3.0/res
+com.xiaxi.safety.app-activity-1.8.0-13 /Users/xiaxi/.gradle/caches/8.14.3/transforms/a901b5ff13662b1e414e5ef6e01aac49/transformed/activity-1.8.0/res
+com.xiaxi.safety.app-lifecycle-livedata-2.6.2-14 /Users/xiaxi/.gradle/caches/8.14.3/transforms/ab67562e64e6dd43a371d05962759e0c/transformed/lifecycle-livedata-2.6.2/res
+com.xiaxi.safety.app-viewpager2-1.0.0-15 /Users/xiaxi/.gradle/caches/8.14.3/transforms/ac68addc43634d74712e2a62b337a752/transformed/viewpager2-1.0.0/res
+com.xiaxi.safety.app-constraintlayout-2.1.4-16 /Users/xiaxi/.gradle/caches/8.14.3/transforms/b523992516b199e4db94083a9308ec8e/transformed/constraintlayout-2.1.4/res
+com.xiaxi.safety.app-lifecycle-process-2.6.2-17 /Users/xiaxi/.gradle/caches/8.14.3/transforms/b6914fdd5d8ff6d2f81769eac6e0523a/transformed/lifecycle-process-2.6.2/res
+com.xiaxi.safety.app-core-runtime-2.2.0-18 /Users/xiaxi/.gradle/caches/8.14.3/transforms/b9adcbac76c11e14be7c29e5c44fd64d/transformed/core-runtime-2.2.0/res
+com.xiaxi.safety.app-emoji2-1.2.0-19 /Users/xiaxi/.gradle/caches/8.14.3/transforms/bcb30252ea624f69fb28bef024d8dcc3/transformed/emoji2-1.2.0/res
+com.xiaxi.safety.app-appcompat-resources-1.6.1-20 /Users/xiaxi/.gradle/caches/8.14.3/transforms/ce893a7972b943aa8d425606589d69e5/transformed/appcompat-resources-1.6.1/res
+com.xiaxi.safety.app-drawerlayout-1.1.1-21 /Users/xiaxi/.gradle/caches/8.14.3/transforms/d165dc4f2069032169810b09eb32b51a/transformed/drawerlayout-1.1.1/res
+com.xiaxi.safety.app-lifecycle-livedata-core-2.6.2-22 /Users/xiaxi/.gradle/caches/8.14.3/transforms/d45b529e39a12c8c122bede2faab36aa/transformed/lifecycle-livedata-core-2.6.2/res
+com.xiaxi.safety.app-coordinatorlayout-1.1.0-23 /Users/xiaxi/.gradle/caches/8.14.3/transforms/e2e9a7dc8d9b420bbcffa639430e3e16/transformed/coordinatorlayout-1.1.0/res
+com.xiaxi.safety.app-core-1.17.0-24 /Users/xiaxi/.gradle/caches/8.14.3/transforms/e3ca011e624c6f26648cef2bf17abb01/transformed/core-1.17.0/res
+com.xiaxi.safety.app-appcompat-1.6.1-25 /Users/xiaxi/.gradle/caches/8.14.3/transforms/e47e72a7ebf3e1d8b65ebf0198fcf5be/transformed/appcompat-1.6.1/res
+com.xiaxi.safety.app-lifecycle-viewmodel-savedstate-2.6.2-26 /Users/xiaxi/.gradle/caches/8.14.3/transforms/ee2b554e614276bf94f8b0170785c2ae/transformed/lifecycle-viewmodel-savedstate-2.6.2/res
+com.xiaxi.safety.app-material-1.12.0-27 /Users/xiaxi/.gradle/caches/8.14.3/transforms/f3a93421df27630955277fc3b50817ad/transformed/material-1.12.0/res
+com.xiaxi.safety.app-tracing-1.2.0-28 /Users/xiaxi/.gradle/caches/8.14.3/transforms/faddfe0960f3d6676b6a6c8c956cffc6/transformed/tracing-1.2.0/res
+com.xiaxi.safety.app-FreeReflection-3.1.0-29 /Users/xiaxi/.gradle/caches/8.14.3/transforms/fd339ec67a5611c100852cff683871a9/transformed/FreeReflection-3.1.0/res
+com.xiaxi.safety.app-pngs-30 /Users/xiaxi/xiaxi_workspace/projects/EnvDetector/app/build/generated/res/pngs/release
+com.xiaxi.safety.app-resValues-31 /Users/xiaxi/xiaxi_workspace/projects/EnvDetector/app/build/generated/res/resValues/release
+com.xiaxi.safety.app-packageReleaseResources-32 /Users/xiaxi/xiaxi_workspace/projects/EnvDetector/app/build/intermediates/incremental/release/packageReleaseResources/merged.dir
+com.xiaxi.safety.app-packageReleaseResources-33 /Users/xiaxi/xiaxi_workspace/projects/EnvDetector/app/build/intermediates/incremental/release/packageReleaseResources/stripped.dir
+com.xiaxi.safety.app-release-34 /Users/xiaxi/xiaxi_workspace/projects/EnvDetector/app/build/intermediates/merged_res/release/mergeReleaseResources
+com.xiaxi.safety.app-main-35 /Users/xiaxi/xiaxi_workspace/projects/EnvDetector/app/src/main/res
+com.xiaxi.safety.app-release-36 /Users/xiaxi/xiaxi_workspace/projects/EnvDetector/app/src/release/res
+com.xiaxi.safety.app-release-37 /Users/xiaxi/xiaxi_workspace/projects/EnvDetector/stub/build/intermediates/packaged_res/release/packageReleaseResources
+com.xiaxi.safety.app-release-38 /Users/xiaxi/xiaxi_workspace/projects/EnvDetector/xiaxiSafe/build/intermediates/packaged_res/release/packageReleaseResources

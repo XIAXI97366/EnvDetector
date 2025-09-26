@@ -48,4 +48,10 @@ void *policy_body_check_debug(void *_val);
 void *policy_body_check_root(void *_val);
 void *policy_body_checkmap(void *_val);
 
+jstring getDeviceBrand(JNIEnv *env, jclass clazz);                      // 获取当前rom的品牌名
+jstring getDeviceDevice(JNIEnv *env, jclass clazz);                     // 获取当前rom的设备名
+jstring getDeviceManufacturer(JNIEnv *env, jclass clazz);               // 获取当前rom的制造商名
+jstring getDeviceModel(JNIEnv *env, jclass clazz);                      // 获取当前rom的机型名
+jstring getDeviceProduct(JNIEnv *env, jclass clazz);                    // 获取当前rom的产品名
+jboolean isBootLoaderEnabled(JNIEnv *env, jclass clazz, jobject keyAttestaion);     // 判断当前设备是否解锁BL
 #endif //CHECKROM_XXGUARD_H

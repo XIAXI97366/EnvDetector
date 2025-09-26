@@ -1,5 +1,6 @@
 #include "xxGuard.h"
 
+
 void xxProtect(JNIEnv *env, jclass clazz, jobject application, jobject process, jobject manager);
 
 extern "C" void _init(void){
@@ -22,21 +23,40 @@ __attribute__((destructor)) void finit_array_1(){
 
 extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     JNIEnv *env= nullptr;
-    jclass clsMxSafe = nullptr;
+    jclass clsXxSafe = nullptr;
+    jclass clsEnv = nullptr;
+    g_vm = vm;
+    std::string romInfo = "";
 
     if (JNI_OK != vm->GetEnv((void **) &env, JNI_VERSION_1_6)) {
         return JNI_ERR;
     }
 
     // java:com.mx.safe.XxSafe.protect ==> xx-guard.cpp.a
-    clsMxSafe = env->FindClass("com/xiaxi/safe/XxSafe");
-    static JNINativeMethod methods[] = {
+    clsXxSafe = env->FindClass("com/xiaxi/safe/XxSafe");
+    static JNINativeMethod methodsXxSafe[] = {
             {"protect",
              "(Landroid/app/Application;Lcom/xiaxi/safe/XxEventProcess;Landroid/content/res/AssetManager;)V",
-             (void *) &xxProtect},
+             (void *)&xxProtect},
     };
-    env->RegisterNatives(clsMxSafe, methods, sizeof(methods) / sizeof(methods[0]));
-    g_vm = vm;
+    env->RegisterNatives(clsXxSafe, methodsXxSafe, sizeof(methodsXxSafe) / sizeof(methodsXxSafe[0]));
+
+    clsEnv = env->FindClass("com/xiaxi/safe/util/EnvDetector");
+    static JNINativeMethod methodsEnvDetector[] = {
+            {"getDeviceBrand",  "()Ljava/lang/String;", (void *)&getDeviceBrand},
+            {"getDeviceDevice",       "()Ljava/lang/String;", (void *)&getDeviceDevice},
+            {"getDeviceManufacturer", "()Ljava/lang/String;", (void *)&getDeviceManufacturer},
+            {"getDeviceModel",        "()Ljava/lang/String;", (void *)&getDeviceModel},
+            {"getDeviceProduct",         "()Ljava/lang/String;", (void *)&getDeviceProduct},
+            {"isBootLoaderEnabled", "(Lcom/xiaxi/safe/util/KeyAttestation/KeyAttestation;)Z", (void *)&isBootLoaderEnabled},
+    };
+    env->RegisterNatives(clsEnv, methodsEnvDetector, sizeof(methodsEnvDetector) / sizeof(methodsEnvDetector[0]));
+
+
+
+
+
+
     //memCrc::check_sum_for_libart();
 
     //void *solistHead = hideMapsItem::get_linker_solistHead();
@@ -77,7 +97,7 @@ void xxProtect(JNIEnv *env, jclass clazz, jobject application, jobject process, 
     g_env = env;
     g_ref = invoke_func();
     antiHook::env = env;
-    rootOfTrust::env = env;
+
 
 //    if (process != nullptr) {
 //        if (g_event != nullptr) {
@@ -116,6 +136,8 @@ void apply_protect_policy() {
     pthread_t checkRoot;
     pthread_t checkInject;
     pthread_t checkMaps;
+
+      pthread_create(&checkDebug, nullptr, &policy_body_check_debug, nullptr);
 
     // pthread_create(&checkMaps, nullptr, &policy_body_checkmap, nullptr);
 
@@ -220,25 +242,27 @@ INLINE void *policy_body_check_hook(void *_val) {
 }
 
 INLINE void *policy_body_check_debug(void *_val){
-    pid_t pid = fork();
-    if (pid <= 0){
-        if (pid){
-            //fork失败流程
-            return nullptr;
-        }else{
-            //子进程流程
-            antiDebug::check_process_and_threads(getppid());
-            antiDebug::check_process_and_threads(getpid());
-            //子进程的检测线程还在运行，所以不能结束子进程
-            while(1){
-                sleep(1);
-            }
-        }
-    }else{
-        //父进程流程
-        LOGD("%s %d", "pid-> ", getpid());
-        antiDebug::check_process_and_threads(getpid());
-    }
+    antiDebug::start_guards();
+
+//    pid_t pid = fork();
+//    if (pid <= 0){
+//        if (pid){
+//            //fork失败流程
+//            return nullptr;
+//        }else{
+//            //子进程流程
+//            antiDebug::check_process_and_threads(getppid());    // 传入父进程 pid
+//            antiDebug::check_process_and_threads(getpid());     // 传入子进程 pid
+//            while(1){
+//                //子进程的检测线程还在运行，所以不能结束子进程
+//                sleep(1);
+//            }
+//        }
+//    }else{
+//        //父进程流程
+//        LOGD("%s %d", "pid-> ", getpid());
+//        antiDebug::check_process_and_threads(getpid());     // 传入自身 pid
+//    }
 }
 
 INLINE void *policy_body_check_root(void *_val){
@@ -311,3 +335,42 @@ INLINE void *policy_body_check_root(void *_val){
 //void getSM4Config(){
 //    //后续添加 遍历动态段获取第一个不被系统承认的init_proc函数的二进制，通过SM4进行解密，key为"mx-safe-jhjxiaxi"
 //}
+
+
+jstring getDeviceBrand(JNIEnv *env, jclass clazz){
+    std::string brand = romEnv::getDeviceBrand();
+    return env->NewStringUTF(brand.c_str());
+}
+
+jstring getDeviceDevice(JNIEnv *env, jclass clazz){
+    std::string device = romEnv::getDeviceDevice();
+    return env->NewStringUTF(device.c_str());
+}
+
+jstring getDeviceManufacturer(JNIEnv *env, jclass clazz){
+    std::string manufacturer = romEnv::getDeviceManufacturer();
+    return env->NewStringUTF(manufacturer.c_str());
+}
+
+jstring getDeviceModel(JNIEnv *env, jclass clazz){
+    std::string model = romEnv::getDeviceModel();
+    return env->NewStringUTF(model.c_str());
+}
+
+jstring getDeviceProduct(JNIEnv *env, jclass clazz){
+    std::string product = romEnv::getDeviceProduct();
+    return env->NewStringUTF(product.c_str());
+}
+
+jboolean isBootLoaderEnabled(JNIEnv *env, jclass clazz, jobject keyAttestaion){
+    bool state = false;
+
+    state = romEnv::check_bl_enabled2(env, keyAttestaion);
+    if (state){
+        // state = true 代表设备已解锁
+        return JNI_TRUE;
+    }else{
+        // state = false 代表设备未解锁
+        return JNI_FALSE;
+    }
+}

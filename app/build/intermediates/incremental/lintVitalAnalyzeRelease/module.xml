@@ -1,14 +1,14 @@
 <lint-module
     format="1"
-    dir="E:\Custom tools\XIAXI\app"
+    dir="/Users/xiaxi/xiaxi_workspace/projects/EnvDetector/app"
     name=":app"
     type="APP"
-    maven="checkROM:app:unspecified"
-    agpVersion="8.7.2"
+    maven="Safety:app:unspecified"
+    agpVersion="8.9.1"
     buildFolder="build"
-    bootClassPath="C:\Users\97366\AppData\Local\Android\Sdk\platforms\android-35\android.jar;C:\Users\97366\AppData\Local\Android\Sdk\build-tools\34.0.0\core-lambda-stubs.jar"
+    bootClassPath="/Users/xiaxi/Library/Android/sdk/platforms/android-36/android.jar:/Users/xiaxi/Library/Android/sdk/build-tools/35.0.0/core-lambda-stubs.jar"
     javaSourceLevel="17"
-    compileTarget="android-35"
+    compileTarget="android-36"
     neverShrinking="true">
   <lintOptions
       abortOnError="true"

@@ -52,7 +52,6 @@ if(${CMAKE_ANDROID_ARCH_ABI} STREQUAL "arm64-v8a")
             antiDebug/guardPorcess/guardPorcess.cpp
             util/helper/helper.cpp
             romEnv/romEnv.cpp
-            romEnv/rootOfTrust.cpp
             crypto/SM4/sm4.c
             util/jniRefInvoke/jniRefInvoke.cpp
             mem/memScan.cpp
@@ -60,7 +59,8 @@ if(${CMAKE_ANDROID_ARCH_ABI} STREQUAL "arm64-v8a")
             mem/memCrc.cpp
             linkerInfo/linkerInfo.cpp
             antiInject/checkMaps.cpp
-            util/inlineASM/raw_syscall/syscall_AARCH_64.s)
+            util/inlineASM/raw_syscall/syscall_AARCH_64.s
+            rootOfTrust/rootOfTrust.cpp)
 elseif(${CMAKE_ANDROID_ARCH_ABI} STREQUAL "armeabi-v7a")
     #set_source_files_properties(syscall_ARM_32.s PROPERTIES COMPILE_FLAGS "-x assembler-with-cpp")
     add_library(${CMAKE_PROJECT_NAME} SHARED
@@ -74,7 +74,6 @@ elseif(${CMAKE_ANDROID_ARCH_ABI} STREQUAL "armeabi-v7a")
             antiDebug/guardPorcess/guardPorcess.cpp
             util/helper/helper.cpp
             romEnv/romEnv.cpp
-            romEnv/rootOfTrust.cpp
             crypto/SM4/sm4.c
             util/jniRefInvoke/jniRefInvoke.cpp
             mem/memScan.cpp
@@ -82,7 +81,8 @@ elseif(${CMAKE_ANDROID_ARCH_ABI} STREQUAL "armeabi-v7a")
             mem/memCrc.cpp
             linkerInfo/linkerInfo.cpp
             antiInject/checkMaps.cpp
-            util/inlineASM/raw_syscall/syscall_ARM_32.s)
+            util/inlineASM/raw_syscall/syscall_ARM_32.s
+            rootOfTrust/rootOfTrust.cpp)
 elseif(${CMAKE_ANDROID_ARCH_ABI} STREQUAL "x86")
     add_library(${CMAKE_PROJECT_NAME} SHARED
             # List C/C++ source files with relative paths to this CMakeLists.txt.
@@ -95,14 +95,14 @@ elseif(${CMAKE_ANDROID_ARCH_ABI} STREQUAL "x86")
             antiDebug/guardPorcess/guardPorcess.cpp
             util/helper/helper.cpp
             romEnv/romEnv.cpp
-            romEnv/rootOfTrust.cpp
             crypto/SM4/sm4.c
             util/jniRefInvoke/jniRefInvoke.cpp
             mem/memScan.cpp
             util/elf_util/elf_util.cpp
             mem/memCrc.cpp
             linkerInfo/linkerInfo.cpp
-            antiInject/checkMaps.cpp)
+            antiInject/checkMaps.cpp
+            rootOfTrust/rootOfTrust.cpp)
 elseif(${CMAKE_ANDROID_ARCH_ABI} STREQUAL "x86_64")
     add_library(${CMAKE_PROJECT_NAME} SHARED
             # List C/C++ source files with relative paths to this CMakeLists.txt.
@@ -115,14 +115,14 @@ elseif(${CMAKE_ANDROID_ARCH_ABI} STREQUAL "x86_64")
             antiDebug/guardPorcess/guardPorcess.cpp
             util/helper/helper.cpp
             romEnv/romEnv.cpp
-            romEnv/rootOfTrust.cpp
             crypto/SM4/sm4.c
             util/jniRefInvoke/jniRefInvoke.cpp
             mem/memScan.cpp
             util/elf_util/elf_util.cpp
             mem/memCrc.cpp
             linkerInfo/linkerInfo.cpp
-            antiInject/checkMaps.cpp)
+            antiInject/checkMaps.cpp
+            rootOfTrust/rootOfTrust.cpp)
 endif()
 
 # Specifies libraries CMake should link to your target library. You

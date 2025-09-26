@@ -64,6 +64,9 @@ static bool invoke_object_method(JNIEnv *env, jobject *result,
 static bool invoke_int_method(JNIEnv *env, jint *result, const char *className,
                               jobject jobj, const char *methodSig, const char *methodName, ...);
 
+static bool invoke_long_method(JNIEnv *env, jlong *result, const char *className,
+                        jobject jobj, const char *methodSig, const char *methodName, ...);
+
 static bool invoke_boolean_method(JNIEnv *env, jboolean *result,
                                   const char *className, jobject jobj, const char *methodSig,
                                   const char *methodName, ...);
@@ -496,6 +499,33 @@ bool invoke_int_method(JNIEnv *env, jint *result, const char *className,
     return false;
 }
 
+bool invoke_long_method(JNIEnv *env, jlong *result, const char *className,
+                        jobject jobj, const char *methodSig, const char *methodName, ...){
+    jclass clazz = env->FindClass(className);
+    exception_check_and_clear(env);
+    do {
+        if (!clazz || !jobj) {
+            break;
+        }
+
+        jmethodID jmethodId_ = env->GetMethodID(clazz, methodName, methodSig);
+        exception_check_and_clear(env);
+        if (!jmethodId_) {
+            env->DeleteLocalRef(clazz);
+            break;
+        }
+        va_list arg_ptr;
+        va_start(arg_ptr, methodName);
+        *result = env->CallLongMethodV(jobj, jmethodId_, arg_ptr);
+
+        exception_check_and_clear(env);
+        va_end(arg_ptr);
+        env->DeleteLocalRef(clazz);
+        return true;
+    } while (0);
+    return false;
+}
+
 bool invoke_boolean_method(JNIEnv *env, jboolean *result, const char *className,
                            jobject jobj, const char *methodSig, const char *methodName, ...) {
     jclass clazz = env->FindClass(className);
@@ -667,9 +697,10 @@ static INVOKE invokeMod = {get_field_object, get_field_static_object,
                                set_field_boolean, set_field_int, set_field_long,
                                set_field_static_ojbect, invoke_static_int_method,
                                invoke_static_boolean_method, invoke_static_void_method,
-                               invoke_static_object_method, invoke_object_method, invoke_int_method,
-                               invoke_boolean_method, invoke_void_method, invoke_novirtual_void_method,
-                               new_instance,get_jstring_from_cstr};
+                               invoke_static_object_method, invoke_object_method,
+                               invoke_int_method,invoke_long_method,invoke_boolean_method,
+                               invoke_void_method, invoke_novirtual_void_method,
+                               new_instance,get_jstring_from_cstr,get_cstr_from_jstring};
 
 INVOKE *invoke_func() {
     return &invokeMod;

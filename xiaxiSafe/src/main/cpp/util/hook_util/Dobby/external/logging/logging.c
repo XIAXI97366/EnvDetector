@@ -111,7 +111,7 @@ PUBLIC int log_internal_impl(int level, const char *fmt, ...) {
   if (!syslog_enabled && !file_log_enabled) {
 #if defined(__ANDROID__)
 #define ANDROID_LOG_TAG "Dobby"
-#include <android/log.h>
+
     __android_log_vprint(ANDROID_LOG_INFO, ANDROID_LOG_TAG, fmt, ap);
 #else
     vprintf(fmt, ap);

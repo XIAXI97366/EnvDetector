@@ -4,6 +4,7 @@
 
 #include "helper.h"
 
+// call __system_property_get
 void get_rom_property(const char *property, char *buffer) {
     pfn_system_property_get sub_system_property_get = nullptr;
     void *handle = nullptr;
@@ -12,19 +13,46 @@ void get_rom_property(const char *property, char *buffer) {
     if(NULL == handle){
         goto GET_ROM_PROPERTY_EXIT;
     }
+
     sub_system_property_get = (pfn_system_property_get)dlsym(handle, "__system_property_get");
-    if (NULL == sub_system_property_get){
+    if (nullptr == sub_system_property_get){
         goto GET_ROM_PROPERTY_EXIT;
     }
     sub_system_property_get(property, buffer);
 
 GET_ROM_PROPERTY_EXIT:
-    if (NULL != handle){
+    if (nullptr != handle){
         dlclose(handle);
         handle = nullptr;
     }
-    return;
 }
+
+// call __system_property_read_callback
+void get_rom_property2(const prop_info* pi,
+                       pfn_system_property_value_cb callback,
+                       void* cookie){
+    pfn_system_property_read_callback sub_system_property_read_callback = nullptr;
+    void *handle = nullptr;
+
+    handle = dlopen("libc.so",  RTLD_LAZY);
+    if(nullptr == handle){
+        goto GET_ROM_PROPERTY_EXIT2;
+    }
+
+    sub_system_property_read_callback = (pfn_system_property_read_callback)dlsym(
+            handle, "__system_property_read_callback");
+    if (nullptr == sub_system_property_read_callback){
+        goto GET_ROM_PROPERTY_EXIT2;
+    }
+    sub_system_property_read_callback(pi, callback, cookie);
+
+GET_ROM_PROPERTY_EXIT2:
+    if (nullptr != handle){
+        dlclose(handle);
+        handle = nullptr;
+    }
+}
+
 
 int get_rom_sdk(){
     char buffer[64] = {0};
@@ -319,6 +347,7 @@ jobject get_application(JNIEnv *env){
 
 const char *get_app_native_lib(JNIEnv *env){
     jobject objApplication = nullptr;
+
     invoke_func()->getStaticObject(env, &objApplication, "com/xx/shell/ACF", "application", "Landroid/app/Application;");
     jclass clsContext = env->FindClass("android/content/Context");
     jmethodID mtdGetApplicationInfo = env->GetMethodID(clsContext,
@@ -635,7 +664,7 @@ const char *get_hash_2_SHA256(u_char *blockBegin, u_char *blockEnd){
     return hex_str.c_str();
 }
 
-// 通过 fd 反查是否伪造了 maps 文件
+// 通过fd反查路径判断文件是否有效
 bool check_baseapk_valid(int fd, const char *filePath, ssize_t pathLen, int inode){
     char buf[PATH_MAX] = {0};
     std::string fdPath("/proc/");

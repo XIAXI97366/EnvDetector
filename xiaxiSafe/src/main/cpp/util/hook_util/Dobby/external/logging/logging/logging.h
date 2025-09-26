@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdlib.h>
+#include <android/log.h>
 
 #define LOG_TAG NULL
 

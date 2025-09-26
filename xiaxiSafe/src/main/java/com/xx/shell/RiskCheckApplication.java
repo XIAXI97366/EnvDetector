@@ -33,11 +33,8 @@ public class RiskCheckApplication extends Application {
         Log.e(RiskCheckApplication.TAG, "Adb: " + EnvDetector.isAdbEnabled(base));
         Log.e(RiskCheckApplication.TAG, "Wifi Adb: " + EnvDetector.isAdbWifiEnabled(base));
 
-
-
-
 //        ClassLoader classLoader = base.getClassLoader();
-//        XposedHelpers.findAndHookMethod("com.example.checkrom.MainActivity", classLoader,
+//        XposedHelpers.findAndHookMethod("com.xiaxi.safety.MainActivity", classLoader,
 //                "stringFromJNI",
 //                new XC_MethodHook() {
 //                    @Override
@@ -59,12 +56,15 @@ public class RiskCheckApplication extends Application {
         super.onCreate();
 
         try {
-            // 要放在 kApplication 的 onCreate 中，attachBaseContext 时间过早
-                // Context 可能还没有完全初始化
-                // 某些系统服务可能还不可用
-                // PackageManager 等系统组件可能还未准备好
-            Log.e(RiskCheckApplication.TAG, "BootLoader: " + EnvDetector.isBootLoaderEnabled(appContext));
             XxSafe.protect(this);
+
+            // 要放在 RiskCheckApplication 的 onCreate 方法中，attachBaseContext 时间过早， Context 可能还没有完全初始化
+            // 某些系统服务可能还不可用，packageManager 等系统组件可能还未准备好
+            // 且生成业务密钥 alias 的证书链和attestKeyAlias 认证密钥证书的证书链，在 native 层中对业务证书进行解析扩展部分数据
+
+             Log.e(RiskCheckApplication.TAG, "设备信息： " + EnvDetector.showDeviceInfo(appContext));
+             Log.e(RiskCheckApplication.TAG, "BootLoader: " +
+                     EnvDetector.isBootLoaderEnabled(EnvDetector.getKeyAttestation()));
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {

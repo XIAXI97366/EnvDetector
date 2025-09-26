@@ -36,9 +36,12 @@
 #include <cstring>
 #include <string_view>
 #include <map>
+#include <string>
 #include <list>
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
+#include <set>
+#include <sys/prctl.h>
 
 #include "../xiaxi_log.h"
 #include "../list/list.h"
@@ -52,7 +55,6 @@
 #include "../inlineASM/system_call.h"
 #include "../elf_util/elf_util.h"
 #include "../hook_util/hook_utils.h"
-#include "../../romEnv/rootOfTrust.h"
 
 #define ANDROID_K 19
 #define ANDROID_L 21
@@ -83,6 +85,17 @@
 #define SHA256_DIGEST_SIZE 64
 
 typedef int (*pfn_system_property_get)(const char *name, char *value);
+
+// 回调参数的函数类型
+typedef void (*pfn_system_property_value_cb)(void* cookie,
+                                         const char* name,
+                                         const char* value,
+                                         uint32_t serial);
+
+// __system_property_read_callback 自身的函数指针类型
+typedef void (*pfn_system_property_read_callback)(const prop_info* pi,
+                                                    pfn_system_property_value_cb callback,
+                                                    void* cookie);
 
 void get_rom_property(const char *property, char *buffer);
 
@@ -119,5 +132,7 @@ const char *get_hash_2_SHA256(u_char *blockBegin, u_char *blockEnd);
 
 // 通过fd反查路径判断文件是否有效
 bool check_baseapk_valid(int fd, const char *filePath, ssize_t pathLen, int inode);
+
+
 
 #endif //CHECKROM_HELPER_H

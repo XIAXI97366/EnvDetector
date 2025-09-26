@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+        
+        <!-- 检测项标题行 -->
+        <LinearLayout
+            android:id="@+id/header_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground">
+            
+            <!-- 状态图标 -->
+            <ImageView
+                android:id="@+id/status_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@android:drawable/ic_dialog_alert"
+                android:tint="#F44336"
+                android:layout_marginEnd="12dp" />
+            
+            <TextView
+                android:id="@+id/detection_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="检测项目名称"
+                android:textColor="#333333"
+                android:textSize="16sp" />
+                
+            <!-- 展开/折叠箭头 -->
+            <ImageView
+                android:id="@+id/expand_arrow"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@android:drawable/arrow_down_float"
+                android:tint="#666666" />
+                
+        </LinearLayout>
+        
+        <!-- 可展开的详情区域 -->
+        <LinearLayout
+            android:id="@+id/details_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="12dp"
+            android:padding="12dp"
+            android:background="#F8F8F8"
+            android:visibility="gone">
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Details:"
+                android:textColor="#333333"
+                android:textStyle="bold"
+                android:textSize="14sp" />
+                
+            <TextView
+                android:id="@+id/detection_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="检测详细信息"
+                android:textColor="#666666"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="2dp" />
+                
+        </LinearLayout>
+        
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

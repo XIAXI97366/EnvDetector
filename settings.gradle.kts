@@ -28,7 +28,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "checkROM"
+rootProject.name = "Safety"
 include(":app")
 include(":xiaxiSafe")
 include(":stub")

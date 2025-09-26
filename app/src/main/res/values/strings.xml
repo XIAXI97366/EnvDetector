@@ -1,3 +1,19 @@
 <resources>
-    <string name="app_name">checkROM</string>
+    <string name="app_name">Xiaxi Safety</string>
+    <string name="has_inject">Has Inject</string>
+    <string name="has_debug">Has Debug</string>
+    <string name="has_hook">Has Hook</string>
+    <string name="has_vpn">Has VPN</string>
+    <string name="has_emu">Has EMU</string>
+    <string name="has_root">Has Root</string>
+    <string name="has_va">Has VA</string>
+    <string name="FingerPrint">Finger Print</string>
+    <string name="device_information">DEVICE：</string>
+    <string name="device_name">设备名：</string>
+    <string name="android_version">安卓版本：</string>
+    <string name="kernel_version">内核版本：</string>
+    <string name="app">App：</string>
+    <string name="app_signatrue">应用签名：</string>
+    <string name="signatrue_vaild">Signatrue Vaild：</string>
+
 </resources>

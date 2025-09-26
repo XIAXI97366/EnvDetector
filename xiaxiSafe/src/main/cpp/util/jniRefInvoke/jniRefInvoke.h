@@ -70,6 +70,10 @@ typedef struct {
             JNIEnv *env, jint *result, const char *className, jobject jobj,
             const char *methodSig, const char *methodName, ...);
 
+    bool (*callLongMethod)(
+            JNIEnv *env, jlong *result, const char *className, jobject jobj,
+            const char *methodSig, const char *methodName, ...);
+
     bool (*callBooleanMethod)(
             JNIEnv *env, jboolean *result, const char *className, jobject jobj,
             const char *methodSig, const char *methodName, ...);
