@@ -1,58 +1,70 @@
 #include "xxGuard.h"
 
-
-void xxProtect(JNIEnv *env, jclass clazz, jobject application, jobject process, jobject manager);
+jobjectArray get_detections(JNIEnv *env, jobject thiz,
+                            jobject context, jobject packageManager);
+void xx_protect(JNIEnv *env, jclass clazz, jobject application, jobject process, jobject manager);
 
 extern "C" void _init(void){
-    //修复so文件格式并读取SM4配置文件中的密钥和IV设置对应加固选项
-    //后续添加修复so格式的函数并配置SM4配置文件的二进制数据记录在so的elf文件格式中的函数
+    // 修复 so 格式并读取SM4配置文件中的密钥和IV设置对应加固选项
+    // 后续添加修复so格式的函数并配置SM4配置文件的二进制数据记录在so的elf文件格式中的函数
 };
 
-__attribute__((constructor)) void init_array_1(){}
+__attribute__((constructor)) void init_global_obj(){
+    /** init checkMaps global object（获取 maps info 和 basefd） **/
+    g_cm.get_map_seg_info();
+    g_cm.get_base_fd();
+}
 
 __attribute__((constructor)) void init_array_2(){}
 
 __attribute__((constructor)) void init_array_3(){}
 
-__attribute__((destructor)) void finit_array_1(){
-    if (nullptr != g_config){
-        free(g_config);
-        g_config = nullptr;
-    }
-}
+__attribute__((destructor)) void finit_array_1(){}
 
 extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     JNIEnv *env= nullptr;
     jclass clsXxSafe = nullptr;
+    jclass clsNativeDetections = nullptr;
     jclass clsEnv = nullptr;
-    g_vm = vm;
     std::string romInfo = "";
+    g_vm = vm;
 
     if (JNI_OK != vm->GetEnv((void **) &env, JNI_VERSION_1_6)) {
         return JNI_ERR;
+    }else{
+        g_env = env;
     }
 
-    // java:com.mx.safe.XxSafe.protect ==> xx-guard.cpp.a
     clsXxSafe = env->FindClass("com/xiaxi/safe/XxSafe");
     static JNINativeMethod methodsXxSafe[] = {
             {"protect",
              "(Landroid/app/Application;Lcom/xiaxi/safe/XxEventProcess;Landroid/content/res/AssetManager;)V",
-             (void *)&xxProtect},
+             (void *)&xx_protect},
     };
-    env->RegisterNatives(clsXxSafe, methodsXxSafe, sizeof(methodsXxSafe) / sizeof(methodsXxSafe[0]));
+    env->RegisterNatives(clsXxSafe, methodsXxSafe,
+                         sizeof(methodsXxSafe) / sizeof(methodsXxSafe[0]));
+
+    clsNativeDetections = env->FindClass("com/xiaxi/safety/app/NativeDetections");
+    static JNINativeMethod methodsNativeDetections[] = {
+            {"getDetections",
+             "(Landroid/content/Context;Landroid/content/pm/PackageManager;)[Lcom/xiaxi/safety/app/DetectionResult;",
+             (void *) get_detections},
+    };
+    env->RegisterNatives(clsNativeDetections, methodsNativeDetections,
+                         sizeof(methodsNativeDetections) / sizeof(methodsNativeDetections[0]));
 
     clsEnv = env->FindClass("com/xiaxi/safe/util/EnvDetector");
     static JNINativeMethod methodsEnvDetector[] = {
-            {"getDeviceBrand",  "()Ljava/lang/String;", (void *)&getDeviceBrand},
-            {"getDeviceDevice",       "()Ljava/lang/String;", (void *)&getDeviceDevice},
-            {"getDeviceManufacturer", "()Ljava/lang/String;", (void *)&getDeviceManufacturer},
-            {"getDeviceModel",        "()Ljava/lang/String;", (void *)&getDeviceModel},
-            {"getDeviceProduct",         "()Ljava/lang/String;", (void *)&getDeviceProduct},
-            {"isBootLoaderEnabled", "(Lcom/xiaxi/safe/util/KeyAttestation/KeyAttestation;)Z", (void *)&isBootLoaderEnabled},
+            {"getDeviceBrand",  "()Ljava/lang/String;", (void *)&get_device_brand},
+            {"getDeviceDevice",       "()Ljava/lang/String;", (void *)&get_device_device},
+            {"getDeviceManufacturer", "()Ljava/lang/String;", (void *)&get_device_manufacturer},
+            {"getDeviceModel",        "()Ljava/lang/String;", (void *)&get_device_model},
+            {"getDeviceProduct",         "()Ljava/lang/String;", (void *)&get_device_product},
+            {"isBootLoaderEnabled", "(Lcom/xiaxi/safe/util/KeyAttestation/KeyAttestation;)Z", (void *)&check_bootloader_enabled},
+            {"checkSignatureV2", "()Z", (void *)&check_signature_V2},
     };
-    env->RegisterNatives(clsEnv, methodsEnvDetector, sizeof(methodsEnvDetector) / sizeof(methodsEnvDetector[0]));
-
-
+    env->RegisterNatives(clsEnv, methodsEnvDetector,
+                         sizeof(methodsEnvDetector) / sizeof(methodsEnvDetector[0]));
 
 
 
@@ -91,53 +103,40 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     return JNI_VERSION_1_6;
 }
 
-void xxProtect(JNIEnv *env, jclass clazz, jobject application, jobject process, jobject manager) {
-    jclass clsMxsafe = nullptr;
-    jmethodID midcheckActivitySafe = nullptr;
-    g_env = env;
-    g_ref = invoke_func();
-    antiHook::env = env;
+jobjectArray get_detections(JNIEnv *env, jobject thiz, jobject context, jobject packageManager){
+    return nullptr;
+};
 
+void xx_protect(JNIEnv *env, jclass clazz, jobject application, jobject process, jobject manager) {
+    jobject objAppContext = nullptr;
+    DR2J result = {0};
 
-//    if (process != nullptr) {
-//        if (g_event != nullptr) {
-//            env->DeleteGlobalRef(g_event);
-//        }
-//        g_event = env->NewGlobalRef(process);
-//    }
-//    g_xxsafe = env->NewGlobalRef(clazz);
-    //g_midIsVpnUsed = env->GetStaticMethodID(clazz, "isVpnUsed", "()Z");
+    // 反射调用 EnvDetector 中的检测方法
+    invoke_func()->getStaticObject(env, &objAppContext, "com/xx/shell/RiskCheckApplication",
+                                   "appContext", "Landroid/content/Context;");
+    if (nullptr != objAppContext){
+        invoke_func()->callStaticBooleanMethod(env, &result.isAdbEnable, "com/xiaxi/safe/util/EnvDetector",
+                                               "(Landroid/content/Context;)Z", "isAdbEnable", objAppContext);
+        invoke_func()->callStaticBooleanMethod(env, &result.isDeveloperModeEnable, "com/xiaxi/safe/util/EnvDetector",
+                                               "(Landroid/content/Context;)Z", "isDeveloperModeEnable", objAppContext);
+        invoke_func()->callStaticBooleanMethod(env, &result.isWifiAdbEnable, "com/xiaxi/safe/util/EnvDetector",
+                                               "(Landroid/content/Context;)Z", "isWifiAdbEnable", objAppContext);
+        invoke_func()->callStaticBooleanMethod(env, &result.isVpnUser, "com/xiaxi/safe/util/EnvDetector",
+                                               "()Z", "isVpnUsed");
+    }
 
-    //jclass clsMxEventProcess = env->FindClass("com/xiaxi/safe/XxEventProcess");
-    //g_midOnMessage = env->GetMethodID(clsMxEventProcess, "onMessage", "(I)V");
-
-//    if (!sm4DecryptNormal(env, manager)){
-//        LOGD("Get SM4 Config Error");
-//        //sub_kill(getpid());
-//    }
-
-//    if (g_config->isScreen || g_config->isHijack) {
-//        clsMxsafe = env->FindClass("com/mx/safe/MxSafe");
-//        midcheckActivitySafe = env->GetStaticMethodID(clsMxsafe, "checkActivitySafe",
-//                                                   "(Landroid/app/Application;ZZ)V");
-////        env->CallStaticVoidMethod(clsMxsafe, midcheckActivitySafe, application, g_config->isScreen,
-////                                  g_config->isHijack);
-//        env->CallStaticVoidMethod(clsMxsafe, midcheckActivitySafe, application, 1,
-//                                  1);
-//    }
-
-    //应用保护策略
-    apply_protect_policy();
+    // 应用本地保护策略
+    apply_native_protect_policy();
 }
 
-void apply_protect_policy() {
+void apply_native_protect_policy() {
     pthread_t checkHook;
     pthread_t checkDebug;
     pthread_t checkRoot;
     pthread_t checkInject;
     pthread_t checkMaps;
 
-      pthread_create(&checkDebug, nullptr, &policy_body_check_debug, nullptr);
+    // pthread_create(&checkDebug, nullptr, &policy_body_check_debug, nullptr);
 
     // pthread_create(&checkMaps, nullptr, &policy_body_checkmap, nullptr);
 
@@ -158,38 +157,26 @@ void apply_protect_policy() {
 //    }
 }
 
-//INLINE void callBack(JNIEnv *env, int code)  {
-//    if (nullptr != g_event) {
-//        env->CallVoidMethod(g_event, g_midOnMessage, code);
-//    } else {
-//        sleep(3);
-//        exit(0);
-//    }
-//}
-
-INLINE void *policy_body_checkmap(void *_val) {
+INLINE void *check_maps_policy(void *_val) {
     while (true) {
-        checkMaps ck;
-        ck.get_map_seg_info();
-        ck.get_base_fd();
 
         LOGE("[+] /////////////////////////////////////////////");
-        if (ck.check_maps_valid()){
+        if (g_cm.check_maps_valid()){
             return nullptr;
         }
 
-        if(ck.is_zygote_injected()){
+        if(g_cm.is_zygote_injected()){
             return nullptr;
         }
 
-        if(ck.is_map_segment_compliance()){
+        if(g_cm.is_map_segment_compliance()){
             return nullptr;
         }
 
-        if (check_baseapk_valid(ck.basefd, ck.basePath, sub_strlen(ck.basePath), ck.inode)){
+        if (check_baseapk_valid(g_cm.basefd, g_cm.basePath, sub_strlen(g_cm.basePath), g_cm.inode)){
             return nullptr;
         }else{
-            check_certificate_2_V2(ck.basefd, 0x36a, cert_V2_sha256);
+            check_certificate_2_V2(g_cm.basefd, 0x36a, cert_V2_sha256);
         }
         LOGE("[+] /////////////////////////////////////////////");
         LOGE("【///////////////////////////////////////////////】");
@@ -198,7 +185,7 @@ INLINE void *policy_body_checkmap(void *_val) {
     return nullptr;
 }
 
-INLINE void *policy_body_check_hook(void *_val) {
+INLINE void *check_hook_policy(void *_val) {
     while (true) {
 
         //检测Libc.so的函数是否被PltHook
@@ -241,7 +228,7 @@ INLINE void *policy_body_check_hook(void *_val) {
     return nullptr;
 }
 
-INLINE void *policy_body_check_debug(void *_val){
+INLINE void *check_debug_policy(void *_val){
     antiDebug::start_guards();
 
 //    pid_t pid = fork();
@@ -265,7 +252,7 @@ INLINE void *policy_body_check_debug(void *_val){
 //    }
 }
 
-INLINE void *policy_body_check_root(void *_val){
+INLINE void *check_root_policy(void *_val){
     memScan::check_process_mem(getpid());
     int result = 0;
 
@@ -276,101 +263,46 @@ INLINE void *policy_body_check_root(void *_val){
     }
 }
 
-//直接从 assets 目录下直接读取 225ea18d3fbdc836f2c28600171e5817.png 按照 SM4 算法获取对应的加密选项
-//int sm4DecryptNormal(JNIEnv *env, jobject manager){
-//    AAssetManager *pAssetManager = nullptr;
-//    AAsset *pFile = nullptr;
-//    u_char *pEncrypt = nullptr;
-//    u_char *pDecrypt = nullptr;
-//    SM4_KEY_st *pSm4 = nullptr;
-//
-//    pAssetManager = AAssetManager_fromJava(env, manager);
-//    pFile = AAssetManager_open(pAssetManager, "225ea18d3fbdc836f2c28600171e5817.png",
-//                               AASSET_MODE_BUFFER);
-//    size_t fileLength = AAsset_getLength(pFile);
-//    if (0 != (fileLength % 16)){
-//        //如果读取出来的数据长度不是16的倍数，说明当前ROM环境不可靠
-//        return 0;
-//    }
-//    if (nullptr != g_config){
-//        free(g_config);
-//        g_config = nullptr;
-//    }
-//
-//    g_config = (MX_CONFIG *) malloc(sizeof(struct mxConfig));
-//    pEncrypt = (u_char *) malloc(fileLength);
-//    pDecrypt = (u_char *) malloc(fileLength);
-//    pSm4 = (SM4_KEY_st *) malloc(sizeof(struct SM4_KEY_st));
-//    memset(g_config, 0, sizeof(struct mxConfig));
-//    memset(pEncrypt, 0, fileLength);
-//    memset(pDecrypt, 0, fileLength);
-//    memset(pSm4, 0, sizeof(struct SM4_KEY_st));
-//
-//    AAsset_read(pFile, pEncrypt, fileLength);
-//    AAsset_close(pFile);
-//
-//    for (int i = 0; i < sizeof(struct mxConfig); i++) {
-//        pEncrypt[i] = (char) (pEncrypt[i] ^ 0x8);
-//    }
-//    sm4_set_key((u_char *) "mx-safe-jhjxiaxi", pSm4);
-//    sm4_decrypt(pEncrypt, pDecrypt, pSm4);
-//    memcpy(g_config, pDecrypt, sizeof(struct mxConfig));
-//
-//    if (nullptr != pSm4){
-//        free(pSm4);
-//        pSm4 = nullptr;
-//    }
-//    if (nullptr != pEncrypt){
-//        free(pEncrypt);
-//        pEncrypt = nullptr;
-//    }
-//    if (nullptr != pDecrypt){
-//        free(pDecrypt);
-//        pDecrypt = nullptr;
-//    }
-//
-//    return 1;
-//}
-
-//void getSM4Config(){
-//    //后续添加 遍历动态段获取第一个不被系统承认的init_proc函数的二进制，通过SM4进行解密，key为"mx-safe-jhjxiaxi"
-//}
-
-
-jstring getDeviceBrand(JNIEnv *env, jclass clazz){
+jstring get_device_brand(JNIEnv *env, jclass clazz){
     std::string brand = romEnv::getDeviceBrand();
     return env->NewStringUTF(brand.c_str());
 }
 
-jstring getDeviceDevice(JNIEnv *env, jclass clazz){
+jstring get_device_device(JNIEnv *env, jclass clazz){
     std::string device = romEnv::getDeviceDevice();
     return env->NewStringUTF(device.c_str());
 }
 
-jstring getDeviceManufacturer(JNIEnv *env, jclass clazz){
+jstring get_device_manufacturer(JNIEnv *env, jclass clazz){
     std::string manufacturer = romEnv::getDeviceManufacturer();
     return env->NewStringUTF(manufacturer.c_str());
 }
 
-jstring getDeviceModel(JNIEnv *env, jclass clazz){
+jstring get_device_model(JNIEnv *env, jclass clazz){
     std::string model = romEnv::getDeviceModel();
     return env->NewStringUTF(model.c_str());
 }
 
-jstring getDeviceProduct(JNIEnv *env, jclass clazz){
+jstring get_device_product(JNIEnv *env, jclass clazz){
     std::string product = romEnv::getDeviceProduct();
     return env->NewStringUTF(product.c_str());
 }
 
-jboolean isBootLoaderEnabled(JNIEnv *env, jclass clazz, jobject keyAttestaion){
-    bool state = false;
-
-    state = romEnv::check_bl_enabled2(env, keyAttestaion);
-    if (state){
+jboolean check_bootloader_enabled(JNIEnv *env, jclass clazz, jobject keyAttestaion){
+    if (romEnv::check_bl_enabled2(env, keyAttestaion)){
         // state = true 代表设备已解锁
         return JNI_TRUE;
     }else{
         // state = false 代表设备未解锁
         return JNI_FALSE;
     }
+}
+
+jboolean check_signature_V2(JNIEnv *env, jclass clazz){
+    if (check_certificate_2_V2(g_cm.basefd, 0x36a, cert_V2_sha256)){
+        // 返回 true 则应用未被篡改
+        return JNI_TRUE;
+    }
+    // 返回 false 应用已被篡改
+    return JNI_FALSE;
 }

@@ -115,7 +115,6 @@ bool romEnv::check_rom_userdebug() {
         [ro.build.fingerprint]: [google/oriole/oriole:13/TQ2A.230505.002/9891397:user/release-keys]
         检测如上属性，查看当前的rom是否为userdebug（test-keys）
      */
-
 }
 
 bool romEnv::checkr_rom_customize() {

@@ -484,6 +484,7 @@ const char *get_jit_path() {
 bool check_certificate_2_V2(int fd, unsigned expected_size, const char *expected_sha256){
     struct stat apkInfo = {0};
     FILE *fp = nullptr;
+    int dupfd = 0;
     uint32_t EOCD = 0x06054b50;
     u_char byte = 0;
     uint32_t eocd = 0;
@@ -504,24 +505,27 @@ bool check_certificate_2_V2(int fd, unsigned expected_size, const char *expected
     loff_t pos = 0;
     bool ret = false;
 
+
     if (fd <= 0){
         LOGE("[-] %s %d fd <= 0 ", __FUNCTION__ , __LINE__);
         goto PROC_EXIT;
+    }else{
+        dupfd = dup(fd);
     }
 
-    if(-1 == fstat(fd, &apkInfo)){
+    if(-1 == fstat(dupfd, &apkInfo)){
         LOGE("[-] %s %d fstat error ", __FUNCTION__ , __LINE__);
         goto PROC_EXIT;
     }
 
     // fdopen 返回的 fp 如果不关闭会导致程序异常
-    fp = fdopen(fd, "r");
+    fp = fdopen(dupfd, "r");
     if (nullptr == fp){
         LOGE("[-] %s %d fdopen error ", __FUNCTION__ , __LINE__);
         goto PROC_EXIT;
     }
 
-    // 未找到 EOCD 也需要处理 fp
+    // 未找到 EOCD 也需要处理 fp，从文件尾部查找 EOCD flags
     // find EOCD flags >> 50 4b 05 06
     for (int i = 1; i <= apkInfo.st_size; ++i) {
         fseek(fp, apkInfo.st_size - i, SEEK_SET);
@@ -599,11 +603,48 @@ PROC_EXIT:
     if (nullptr != fp){
         fclose(fp);
     }
-    if (0 != fd){
-        sub_close(fd);
-    }
     return ret;
 }
+
+/**
+ *  0x013fc850  central_dir_offset
+    41 50 4B 20 53 69 67 20 42 6C 6F 63 6B 20 34 32 buf == APK_SIGNING_BLOCK_MAGIC ==> "APK Sig Block 42"
+    F8 3F 00 00 00 00 00 00 signing_blk_sz
+
+    第一轮开始
+    0x13f8864   pos
+    00 06 00 00 00 00 00 00 u64_val
+    1A 87 09 71 id  ==  SIGNATURE_SCHEME_V2_MAGIC ==> 0x7109871A;
+
+    expected_size       0x36a
+    expected_sha256     "e368efd93b876f11f6df19d2716b53e153808bc27783c2d8890c80fe26788d1b"
+
+    F8 05 00 00 signer_sequence_len
+    F4 05 00 00 signer_len
+    B6 03 00 00 signed_data_len
+    2C 00 00 00 digests_sequence_len
+
+    0x13f8874   0x13f88a0   pos
+    6E 03 00 00 certificates_len
+    6A 03 00 00 certificate_len == expected_size == 0x36a
+    certificate_len数据所在位置后面的就是证书数据，长度 certificate_len // 此处获取的 cert 数据是.jks导出.crt证书后，其.crt证书的二进制
+
+
+    第二轮
+    0x13f8e60   pos
+    00 06 00 00 00 00 00 00 u64_val
+    C0 68 53 F0 id  ==  v3_signing_exist
+
+    第三轮
+    0x13f9468   pos
+    3B 26 00 00 00 00 00 00 u64_val
+    53 44 4B 50 id  ==  Unknown id: 0x%08x
+
+    第四轮终止
+    0x13fbaab   pos
+    85 0D 00 00 00 00 00 00 u64_val
+    77 65 72 42 id  ==  Unknown id: 0x%08x
+ */
 
 // 可以计算壳的签名，但就算是获取了签名，壳如果使用了魔改的算法也无法定位用于比较的字符串（包括 strcmp 和 strncmp）
 // 因为 strcmp 和 strncmp 功能都可以由加固方实现，所以定位签名校验处的希望不大
@@ -626,7 +667,7 @@ bool check_V2_sign_block(FILE *fp, u_long pos, unsigned expected_size, const cha
 
     //移动当前文件指针 + digests_sequence_len
     fseek(fp, pos + digests_sequence_len, SEEK_SET);
-    fread(&certificates_len, sizeof(certificates_len), 1, fp);
+        fread(&certificates_len, sizeof(certificates_len), 1, fp);
     fread(&certificate_len, sizeof(certificate_len), 1, fp);
 
     if (expected_size != certificate_len){

@@ -47,7 +47,7 @@
 # 获取扩展部分的数据根本不需要认证密钥证书只需要认证证书（即叶子证书也就是通过 Alias 生成的证书）
 ```
 
-# 动态检测类（存在如下特征通知至界面UI）
+# 动态检测类
 
 ```
 antiDebug（双子看护
@@ -104,7 +104,7 @@ checkMaps{
 
 ```
 
-# 环境检测类（存在如下特征通知至界面UI）
+# 环境检测类
 
 ```
 class romEnv{
@@ -119,7 +119,7 @@ class romEnv{
 };
 ```
 
-# 设备信息类（设备信息通知至界面UI）
+# 设备信息类
 
     class romEnv{
     	static std::string getDeviceBrand();        // 获取当前ROM的品牌名
@@ -129,6 +129,8 @@ class romEnv{
     	static std::string getDeviceProduct();      // 获取当前ROM的产品名
     }
     
+
+# 错误处理类
 
 
 

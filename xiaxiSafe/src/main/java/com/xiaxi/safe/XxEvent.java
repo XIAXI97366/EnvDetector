@@ -1,43 +1,28 @@
 package com.xiaxi.safe;
 
-/**
- * @author mrack
- * 消息事件
- */
 
 public class XxEvent {
-    /**
-     * HOOK检测
-     */
-    public final static int HOOK = 7;
+    /** Hook框架检测 */
+    public final static int HOOK = 1;
 
-    /**
-     * VPN检测
-     */
-    public final static int VPN = 6;
+    /** 反调试检测 */
+    public final static int DEBUG = 2;
 
-    /**
-     * 模拟器检测
-     */
-    public final static int EMU = 5;
+    /** Root权限检测 */
+    public final static int ROOT = 3;
 
-    /**
-     * 调试检测
-     */
-    public final static int DEBUG = 4;
+    /** 模拟器检测 */
+    public final static int EMU = 4;
 
-    /**
-     * 注入检测
-     */
-    public final static int INJECT = 3;
+    /** 环境异常检测（如开启VPN、解锁bl） */
+    public final static int ENV = 5;
 
-    /**
-     * 多开检测
-     */
-    public final static int VA = 2;
+    /** 多开检测 */
+    public final static int VA = 6;
 
-    /**
-     * Root检测
-     */
-    public final static int ROOT = 1;
+    /** 运行时篡改检测（如注入框架） */
+    public final static int RUNTIME_TAMPERING = 7;
+
+    /**  APK完整性检测 */
+    public final static int APK_INTEGRITY = 8;
 }

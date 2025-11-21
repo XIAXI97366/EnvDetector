@@ -125,6 +125,33 @@ elseif(${CMAKE_ANDROID_ARCH_ABI} STREQUAL "x86_64")
             rootOfTrust/rootOfTrust.cpp)
 endif()
 
+# OLLVM 混淆，如果不额外添加参数，编译 release 版本默认对应的是 RelWithDebInfo
+# set(CMAKE_C_FLAGS_RELWITHDEBINFO   "${CMAKE_C_FLAGS_RELWITHDEBINFO}     -mllvm -arkari-cfg=${CMAKE_CURRENT_SOURCE_DIR}/ollvm-arkari-cfg.json ")
+# set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}   -mllvm -arkari-cfg=${CMAKE_CURRENT_SOURCE_DIR}/ollvm-arkari-cfg.json ")
+
+# 编译器和链接器优化设置，如果不额外添加参数，编译 release 版本默认对应的是 RelWithDebInfo
+if (CMAKE_BUILD_TYPE MATCHES "RelWithDebInfo")
+    # Release版本 - 最大优化和符号strip
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -O3 -DNDEBUG -fvisibility=hidden -ffunction-sections -fdata-sections")
+    set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO} -O3 -DNDEBUG -fvisibility=hidden -ffunction-sections -fdata-sections")
+
+    # 链接器优化 - 移除未使用的代码段和符号表
+    set(CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO "${CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO} -Wl,--gc-sections -Wl,--strip-all -Wl,--exclude-libs,ALL")
+    set(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "${CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO} -Wl,--gc-sections -Wl,--strip-all -Wl,--exclude-libs,ALL")
+
+    # 添加更多安全编译标志 -fno-stack-protector 关闭栈保护 -fomit-frame-pointer 取消帧指针寄存器
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -fno-stack-protector -fomit-frame-pointer")
+    set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO} -fno-stack-protector -fomit-frame-pointer")
+
+    message(STATUS "Building RELEASE version with maximum optimization and symbol stripping")
+else ()
+    # Debug版本 - 保留调试信息
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g -DDEBUG")
+    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0 -g -DDEBUG")
+
+    message(STATUS "Building DEBUG version with debug symbols")
+endif ()
+
 # Specifies libraries CMake should link to your target library. You
 # can link libraries from various origins, such as libraries defined in this
 # build script, prebuilt third-party libraries, or Android system libraries.

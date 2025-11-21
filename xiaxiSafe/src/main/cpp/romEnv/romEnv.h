@@ -7,7 +7,7 @@
 
 #include "../util/helper/helper.h"
 
-namespace MX_SU {
+namespace XX_SU {
     bool check_by_selinux();
     bool check_by_prop();
     bool check_by_env();

@@ -1,6 +1,12 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    ///// UI 新增 /////
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
+    ///// UI 新增 /////
 }
 
 android {
@@ -11,34 +17,29 @@ android {
     signingConfigs {
         create("release") {
             // storeFile = file("C:\\Users\\97366\\xiaxi97366.jks")
-            storeFile = file("/Users/xiaxi/xiaxi_workspace/tools/AS_Signtrues/xiaxi97366.jks")
+            storeFile = file("/Users/xiaxi/xiaxi/xiaxi97366.jks")
             storePassword = "973668008"
             keyAlias = "key0"
             keyPassword = "973668008"
 
             enableV1Signing = true
             enableV2Signing = true
-            enableV3Signing = true
+            enableV3Signing = true  
             enableV4Signing = true
         }
     }
 
     defaultConfig {
         applicationId = "com.xiaxi.safety"
-        minSdk = 23
+        minSdk = 27
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 100
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // ndkVersion = "26.2.11394342"
-        // ndkPath = "E:\\Environment_Variable\\android-ndk-r26c-windows\\android-ndk-r26c"
-
-        // ndkVersion = "27.2.12479018"
-        // ndkPath = "D:\\NDK\\android-ndk-r27c-windows\\android-ndk-r27c"
-
-        ndkVersion = "28.2.13676358"
+        ndkVersion = "29.0.14206865"
+        // ndkPath = "E:\\Environment_Variable\\android-ndk-r29-windows\\android-ndk-r29"
         ndkPath = "/opt/homebrew/share/android-ndk"
 
         externalNativeBuild {
@@ -93,4 +94,39 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    ///// UI 新增  📦 使用 BOM 管理 Compose 版本 /////
+    implementation(platform(libs.androidx.compose.bom))
+
+    ///// UI 新增  🎨 Compose UI组件 /////
+    implementation(libs.bundles.compose)
+
+    ///// UI 新增  📱 AndroidX核心 /////
+    implementation(libs.bundles.androidx.core)
+
+    ///// UI 新增  🔄 生命周期组件 /////
+    implementation(libs.bundles.lifecycle)
+
+    ///// UI 新增  🔧 依赖注入 (Hilt) /////
+    implementation(libs.bundles.hilt)
+    ksp(libs.hilt.compiler)
+
+    ///// UI 新增  💾 数据存储 /////
+    implementation(libs.bundles.datastore)
+
+    ///// UI 新增  🎨 UI和主题 /////
+    implementation(libs.bundles.ui.theme)
+
+    implementation(libs.bundles.core)
+
+    implementation(libs.bundles.accompanist)
+
+    ///// UI 新增  🧪 测试依赖 /////
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
 }

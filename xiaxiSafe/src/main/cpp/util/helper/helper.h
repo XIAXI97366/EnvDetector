@@ -134,5 +134,4 @@ const char *get_hash_2_SHA256(u_char *blockBegin, u_char *blockEnd);
 bool check_baseapk_valid(int fd, const char *filePath, ssize_t pathLen, int inode);
 
 
-
 #endif //CHECKROM_HELPER_H

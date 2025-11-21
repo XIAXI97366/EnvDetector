@@ -4,11 +4,6 @@
 
 #include "checkMaps.h"
 
-checkMaps ::checkMaps() {
-    phdr = (p_map_seg_info)malloc(sizeof(map_seg_info));
-    memset(phdr, 0, sizeof(map_seg_info));
-}
-
 checkMaps::~checkMaps() {
     p_map_seg_info tmp = nullptr;
     p_map_seg_info node = nullptr;
@@ -47,6 +42,12 @@ p_map_seg_info checkMaps::get_map_seg_info() {
     p_map_seg_info tmp = nullptr;
     p_map_seg_info node = nullptr;
     char fdPath[MAX_LENGTH] = {0};
+
+    if (nullptr == phdr){
+        // 用于处理全局类对象的构造函数的优先级比 __attribute__((constructor)) 初始化函数慢的情况（故删除了类的的初始化函数）
+        phdr = (p_map_seg_info)malloc(sizeof(map_seg_info));
+        memset(phdr, 0, sizeof(map_seg_info));
+    }
 
     if (nullptr != phdr->next){
         return phdr;

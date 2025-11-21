@@ -18,7 +18,6 @@ typedef struct map_seg_info{
 
 class checkMaps {
 public:
-    checkMaps();
     ~checkMaps();
     bool check_map_injected();
     p_map_seg_info get_map_seg_info();
@@ -28,7 +27,7 @@ public:
     bool get_base_fd();
     void get_map_segment_path(const char *key, char *buf, int size);
 public:
-    p_map_seg_info phdr;
+    p_map_seg_info phdr = nullptr;
     int mapfd = 0;
     int basefd = 0;
     char basePath[MAX_LENGTH] = {0};

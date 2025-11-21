@@ -22,18 +22,9 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
 
-        // ndkVersion = "26.2.11394342"
-        // ndkPath = "E:\\Environment_Variable\\android-ndk-r26c-windows\\android-ndk-r26c"
-
-        // ndkVersion = "27.2.12479018"
-        // ndkPath = "D:\\NDK\\android-ndk-r27c-windows\\android-ndk-r27c"
-
-        ndkVersion = "28.2.13676358"
+        ndkVersion = "29.0.14206865"
+        // ndkPath = "E:\\Environment_Variable\\android-ndk-r29-windows\\android-ndk-r29"
         ndkPath = "/opt/homebrew/share/android-ndk"
-
-        ndk {
-            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64" // 指定需要的架构
-        }
 
         externalNativeBuild {
             cmake {
@@ -65,7 +56,6 @@ android {
         prefab true
     }
     kotlinOptions {
-        // jvmTarget = '21'
         jvmTarget = '17'
     }
 }
@@ -79,10 +69,10 @@ dependencies {
 
     // 引入 Pine-XPosed Hook 框架，需要注意的是该 Hook 框架不支持 x86 和 x86_46 架构的设备
     // 需要自己去 top.canyie.pine:core 查看想要的版本然后version
-    implementation 'top.canyie.pine:core:0.3.0'
-    implementation 'top.canyie.pine:xposed:0.2.0'
+    // implementation 'top.canyie.pine:core:0.3.0'
+    // implementation 'top.canyie.pine:xposed:0.2.0'
 
-    implementation 'com.github.tiann:FreeReflection:3.1.0'
+    implementation 'com.github.tiann:FreeReflection:3.2.2'
 
     implementation 'org.bouncycastle:bcprov-jdk18on:1.80'
     implementation 'com.google.guava:guava:33.4.0-android'
@@ -98,36 +88,39 @@ dependencies {
     androidTestImplementation libs.espresso.core
 }
 
-
-
+// 解压AAR文件
 task unzipAar(type: Copy) {
-    dependsOn('assembleRelease')
-    from { zipTree("${layout.buildDirectory.dir("outputs/aar/${project.name}-release.aar").get().asFile}") }
-    into layout.buildDirectory.dir("outputs/unzipped").get().asFile
+    dependsOn 'assembleRelease'
+    from zipTree("${buildDir}/outputs/aar/${project.name}-release.aar")
+    into "${buildDir}/outputs/unzipped"
 }
 
-// 将 aar 中的 classes.jar 转为 classes.dex 文件
+// 生成DEX文件
 task generateDex(type: Exec) {
     dependsOn unzipAar
-    def classesJar = file("${layout.buildDirectory.dir("/outputs/unzipped/classes.jar").get().asFile}")
-    def outputDir = file("${layout.buildDirectory.dir("/outputs/dex").get().asFile}")
-    def d8Path = "${android.getSdkDirectory().getAbsolutePath()}\\build-tools\\${android.buildToolsVersion}\\d8.bat"
+
+    def classesJar = file("${buildDir}/outputs/unzipped/classes.jar")
+    def outputDir = file("${buildDir}/outputs/dex")
+
+    // 跨平台d8工具路径
+    def isWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
+    def d8Executable = isWindows ? 'd8.bat' : 'd8'
+    def d8Path = "${android.sdkDirectory}/build-tools/${android.buildToolsVersion}/${d8Executable}"
 
     doFirst {
         if (!classesJar.exists()) {
-            throw new GradleException("classes.jar not found in the unzipped AAR")
+            throw new GradleException("classes.jar not found: ${classesJar.absolutePath}")
         }
         delete outputDir
         outputDir.mkdirs()
     }
 
-    commandLine d8Path, classesJar.absolutePath, "--output", outputDir.absolutePath
+    commandLine d8Path, classesJar.absolutePath, '--output', outputDir.absolutePath
 }
 
-tasks.whenTaskAdded { task ->
-    if (task.name == 'assembleRelease') {
-        task.finalizedBy(generateDex)
-    }
+// 自动执行
+afterEvaluate {
+    assembleRelease.finalizedBy generateDex
 }
 
 androidComponents {
@@ -157,4 +150,3 @@ abstract class ClassVisitorFactory implements AsmClassVisitorFactory<Instrumenta
         return classData.className.startsWith("com.xiaxi.safe.util.")
     }
 }
-

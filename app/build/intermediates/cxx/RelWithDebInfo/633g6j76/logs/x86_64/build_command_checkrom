@@ -1,4 +1,0 @@
-/Users/xiaxi/Library/Android/sdk/cmake/3.22.1/bin/ninja \
-  -C \
-  /Users/xiaxi/xiaxi_workspace/projects/EnvDetector/app/.cxx/RelWithDebInfo/633g6j76/x86_64 \
-  checkrom

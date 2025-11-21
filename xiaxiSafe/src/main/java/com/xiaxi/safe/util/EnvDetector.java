@@ -6,6 +6,10 @@ import android.provider.Settings;
 
 import com.xiaxi.safe.util.KeyAttestation.KeyAttestation;
 import java.lang.reflect.Field;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Collections;
+import java.util.Enumeration;
 
 public class EnvDetector {
     private static KeyAttestation keyAttestation = null;
@@ -17,19 +21,23 @@ public class EnvDetector {
             return keyAttestation;
         }
     }
-    public static boolean isDeveloperModeEnabled(Context context) {
+
+    /** 在 native 中的 xx_protect 函数中反射调用 **/
+    public static boolean isDeveloperModeEnable(Context context) {
         return Settings.Secure.getInt(
                 context.getContentResolver(),
                 Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) != 0;
     }
 
-    public static boolean isAdbEnabled(Context context) {
+    /** 在 native 中的 xx_protect 函数中反射调用 **/
+    public static boolean isAdbEnable(Context context) {
         return Settings.Secure.getInt(
                 context.getContentResolver(),
                 Settings.Global.ADB_ENABLED, 0) != 0;
     }
 
-    public static boolean isAdbWifiEnabled(Context context){
+    /** 在 native 中的 xx_protect 函数中反射调用 **/
+    public static boolean isWifiAdbEnable(Context context){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             try {
                 Field adbWifiEnabledField = Settings.Global.class.getDeclaredField("ADB_WIFI_ENABLED");
@@ -42,53 +50,80 @@ public class EnvDetector {
             }
         }
         return false;
-    };
+    }
 
     /**
      * 优先以该函数获取的设备信息为基准，但如果无法从 hardwareEnforced 中获取设备信息（品牌、设备、产品、制造商、机型）
      * 则调用 native 端的 romEnv::getDeviceInfo() 获取如下设备信息
-     * @return
+     * initKeyAttestation 和 showDeviceInfo 是配套函数
      */
-    public static String showDeviceInfo(Context context) throws Exception {
+    public static void initKeyAttestation(Context context)throws Exception{
         keyAttestation = new KeyAttestation(context);
-        StringBuilder deviceInfo = new StringBuilder();
         keyAttestation.doAttestation();
+    }
 
-        if (null == keyAttestation.attestationData || null == keyAttestation){
+    public static String showDeviceInfo() {
+        StringBuilder deviceInfo = new StringBuilder();
+
+        if (null == keyAttestation || null == keyAttestation.attestationData){
             return "appConfig or appConfig.attestationData value is null";
         }
 
         if (keyAttestation.attestationData.showAttestation.getTeeEnforced().getBrand() != null) {
-            deviceInfo.append("\n品牌 : ").append(keyAttestation.attestationData.showAttestation.getTeeEnforced().getBrand());
+            deviceInfo.append("\n品牌 : ").append(keyAttestation.attestationData.showAttestation.
+                    getTeeEnforced().getBrand());
         }else{
             deviceInfo.append("\n品牌 : ").append(getDeviceBrand());
         }
 
         if (keyAttestation.attestationData.showAttestation.getTeeEnforced().getDevice() != null) {
-            deviceInfo.append("\n设备 : ").append(keyAttestation.attestationData.showAttestation.getTeeEnforced().getDevice());
+            deviceInfo.append("\n设备 : ").append(keyAttestation.attestationData.showAttestation.
+                    getTeeEnforced().getDevice());
         }else{
             deviceInfo.append("\n设备 : ").append(getDeviceDevice());
         }
 
         if (keyAttestation.attestationData.showAttestation.getTeeEnforced().getManufacturer() != null) {
-            deviceInfo.append("\n制造商 : ").append(keyAttestation.attestationData.showAttestation.getTeeEnforced().getManufacturer());
+            deviceInfo.append("\n制造商 : ").append(keyAttestation.attestationData.showAttestation.
+                    getTeeEnforced().getManufacturer());
         }else{
             deviceInfo.append("\n制造商 : ").append(getDeviceManufacturer());
         }
 
         if (keyAttestation.attestationData.showAttestation.getTeeEnforced().getModel() != null) {
-            deviceInfo.append("\n机型 : ").append(keyAttestation.attestationData.showAttestation.getTeeEnforced().getModel());
+            deviceInfo.append("\n机型 : ").append(keyAttestation.attestationData.showAttestation.
+                    getTeeEnforced().getModel());
         }else{
             deviceInfo.append("\n机型 : ").append(getDeviceModel());
         }
 
         if (keyAttestation.attestationData.showAttestation.getTeeEnforced().getProduct() != null) {
-            deviceInfo.append("\n产品 : ").append(keyAttestation.attestationData.showAttestation.getTeeEnforced().getProduct());
+            deviceInfo.append("\n产品 : ").append(keyAttestation.attestationData.showAttestation.
+                    getTeeEnforced().getProduct());
         }else{
             deviceInfo.append("\n产品 : ").append(getDeviceProduct());
         }
 
         return deviceInfo.toString();
+    }
+
+    /** 在 native 中的 xx_protect 函数中反射调用 **/
+    public static boolean isVpnUsed() {
+        try {
+            Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+            if (null != networkInterfaces) {
+                for (NetworkInterface networkInterface : Collections.list(networkInterfaces)) {
+                    if (networkInterface.isUp() && networkInterface.getInterfaceAddresses().size() != 0) {
+                        if ("tun0".equals(networkInterface.getName()) || "ppp0".equals(networkInterface.getName())) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }catch (SocketException e){
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private static native String getDeviceBrand();
@@ -97,5 +132,6 @@ public class EnvDetector {
     private static native String getDeviceModel();
     private static native String getDeviceProduct();
     public static native boolean isBootLoaderEnabled(KeyAttestation keyAttestation);
+    public static native boolean checkSignatureV2();
 }
 

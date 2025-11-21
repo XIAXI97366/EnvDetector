@@ -1,7 +1,7 @@
 <variant
     name="release"
     package="com.xiaxi.safety"
-    minSdkVersion="23"
+    minSdkVersion="27"
     targetSdkVersion="34"
     mergedManifest="build/intermediates/merged_manifest/release/processReleaseMainManifest/AndroidManifest.xml"
     manifestMergeReport="build/outputs/logs/manifest-merger-release-report.txt"
@@ -22,11 +22,11 @@
   <testFixturesSourceProviders>
   </testFixturesSourceProviders>
   <artifact
-      classOutputs="build/intermediates/javac/release/compileReleaseJavaWithJavac/classes:build/tmp/kotlin-classes/release:build/kotlinToolingMetadata:build/intermediates/compile_and_runtime_not_namespaced_r_class_jar/release/processReleaseResources/R.jar"
+      classOutputs="build/intermediates/javac/release/compileReleaseJavaWithJavac/classes:build/tmp/kotlin-classes/release:build/kotlinToolingMetadata:build/intermediates/hilt/component_classes/release:build/generated/ksp/release/resources:build/intermediates/compile_and_runtime_not_namespaced_r_class_jar/release/processReleaseResources/R.jar"
       type="MAIN"
       applicationId="com.xiaxi.safety"
-      generatedSourceFolders="build/generated/ap_generated_sources/release/out:build/generated/data_binding_base_class_source_out/release/out"
+      generatedSourceFolders="build/generated/ksp/release/java:build/generated/ksp/release/kotlin:build/generated/ap_generated_sources/release/out:build/generated/data_binding_base_class_source_out/release/out"
       generatedResourceFolders="build/generated/res/resValues/release"
-      desugaredMethodsFiles="/Users/xiaxi/.gradle/caches/8.14.3/transforms/c8163c14cdd1c9d5318ed5c7945352d0/transformed/D8BackportedDesugaredMethods.txt">
+      desugaredMethodsFiles="/Users/xiaxi/.gradle/caches/8.14.3/transforms/9858f6bf5abf4aed9105a4df71430cc0/transformed/D8BackportedDesugaredMethods.txt">
   </artifact>
 </variant>

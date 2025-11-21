@@ -11,7 +11,7 @@ cmake_minimum_required(VERSION 3.22.1)
 # Since this is the top level CMakeLists.txt, the project name is also accessible
 # with ${CMAKE_PROJECT_NAME} (both CMake variables are in-sync within the top level
 # build script scope).
-project("checkrom")
+project("xiaxi")
 
 #enable_language(C ASM)
 #if(${CMAKE_ANDROID_ARCH_ABI} MATCHES "armeabi-v7a")
@@ -44,13 +44,6 @@ project("checkrom")
 add_library(${CMAKE_PROJECT_NAME} SHARED
         # List C/C++ source files with relative paths to this CMakeLists.txt.
         native-lib.cpp
-        #antiXPosed/antiXPosed.cpp
-        #guardPorcess/guardPorcess.cpp
-        #helper/helper.cpp
-        #antiFrida/antiFrida.cpp
-        #romEnv/romEnv.cpp
-        #elfParse/elfParse.cpp
-        #${RAW_SOURCE}
         )
 
 
@@ -62,6 +55,5 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
         # List libraries link to the target library
         android
         log
-        #Dobby
         )
 

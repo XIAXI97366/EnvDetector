@@ -1,3 +1,0 @@
-ninja: Entering directory `/Users/xiaxi/xiaxi_workspace/projects/EnvDetector/app/.cxx/RelWithDebInfo/633g6j76/arm64-v8a'
-[1/2] Building CXX object CMakeFiles/checkrom.dir/native-lib.cpp.o
-[2/2] Linking CXX shared library /Users/xiaxi/xiaxi_workspace/projects/EnvDetector/app/build/intermediates/cxx/RelWithDebInfo/633g6j76/obj/arm64-v8a/libcheckrom.so
