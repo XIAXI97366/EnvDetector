@@ -91,7 +91,8 @@ p_map_seg_info checkMaps::get_map_seg_info() {
     return nullptr;
 }
 
-// 根据jit内存段的属性判断当前进程是否被zygote模块注入（该方案用于针对 Shamiko 前期方案）
+// 根据 jit 内存段的属性判断当前进程是否被 zygote 模块注入（该方案用于针对 Shamiko 前期方案）
+// 该函数中未考虑的问题：如果在内核中直接将进程 maps 中带有 jit-cache 或 jit-zygote-cache 字样的段全部隐藏又该怎样处理
 bool checkMaps::is_zygote_injected() {
     const char *jit_zygote_cache = "/memfd:jit-zygote-cache (deleted)";
     const char *jit_cache = "/memfd:jit-cache (deleted)";
@@ -123,14 +124,14 @@ bool checkMaps::is_zygote_injected() {
                                 zygote_shared_inode = tmp->inode;
                             }else{
                                 if (zygote_shared_inode != tmp->inode){
-                                    // 如果与之前的共享区 inode 不同则说明被zygote注入
+                                    // 如果与之前的共享区 inode 不同则说明被 zygote 注入
                                     LOGE("[-] zygote shared inode have plural ");
                                     return true;
                                 }
                             }
                         }
 
-                        // 记录共享属性的内存段中的可执行段的个数，但如果超过一个可执行段则执行被判定为被注入
+                        // 记录共享属性在内存段中的可执行段的个数，但如果超过一个可执行段则执行被判定为被注入
                         if ('x' == tmp->property[2]){
                             zygote_shared_exc_seg_num++;
                         }
@@ -157,6 +158,7 @@ bool checkMaps::is_zygote_injected() {
                             }
                         }
 
+                        // 记录私有属性在内存段中的可执行段的个数，但如果超过一个可执行段则执行被判定为被注入
                         if ('x' == tmp->property[2]){
                             zygote_private_exc_seg_num++;
                         }
