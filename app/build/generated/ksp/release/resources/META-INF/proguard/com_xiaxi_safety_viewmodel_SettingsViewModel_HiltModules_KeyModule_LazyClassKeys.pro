@@ -1,1 +1,0 @@
--keep,allowobfuscation,allowshrinking class com.xiaxi.safety.viewmodel.SettingsViewModel
