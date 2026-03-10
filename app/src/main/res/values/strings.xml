@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">Xiaxi Safety</string>
+    <string name="has_inject">Has Inject</string>
+    <string name="has_debug">Has Debug</string>
+    <string name="has_hook">Has Hook</string>
+    <string name="has_vpn">Has VPN</string>
+    <string name="has_emu">Has EMU</string>
+    <string name="has_root">Has Root</string>
+    <string name="has_va">Has VA</string>
+    <string name="FingerPrint">Finger Print</string>
+    <string name="device_information">%s</string>
+    <string name="device_name">Devices Name: %s</string>
+    <string name="android_version">Android Version: %s</string>
+    <string name="kernel_version">Kernel Version: %s</string>
+    <string name="app_version">App Version: %s</string>
+    <string name="app">App: %s</string>
+    <string name="app_signatrue">App Signatrue: %s</string>
+    <string name="app_signatrue_vaild">App Signatrue Vaild: %s</string>
+    <string name="vaild_true">true</string>
+    <string name="vaild_false">false</string>
+    <string name="home_label">Home</string>
+    <string name="settings">Settings</string>
+    <string name="settings_app">App</string>
+    <string name="settings_label">Settings</string>
+    <string name="settings_app_desc">Language, and more</string>
+    <string name="the_environment_is_abnormal">The Environment is abnormal</string>
+    <string name="the_environment_is_normal">The Environment is normal</string>
+    <string name="description_abnormal">Modifications to the environment are detected</string>
+    <string name="description_normal">No modifications to the environment are detected.</string>
+    <string name="sysinfo">System:</string>
+    <string name="appinfo">App:</string>
+    <string name="pref_language">Language</string>
+    <string name="en">English</string>
+    <string name="zh_cn">Chinese (Simplified)</string>
+    <string name="detail">Details：</string>
+</resources>

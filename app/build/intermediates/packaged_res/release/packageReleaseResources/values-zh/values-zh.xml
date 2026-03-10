@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="FingerPrint">设备指纹</string>
+    <string name="android_version">安卓版本: %s</string>
+    <string name="app">App: %s</string>
+    <string name="app_name">Xiaxi Safety</string>
+    <string name="app_signatrue">应用签名: %s</string>
+    <string name="app_signatrue_vaild">应用签名验证: %s</string>
+    <string name="app_version">应用版本: %s</string>
+    <string name="appinfo">App:</string>
+    <string name="description_abnormal">检测到对环境的修改</string>
+    <string name="description_normal">未检测到对环境的修改。</string>
+    <string name="detail">详情：</string>
+    <string name="device_information">%s</string>
+    <string name="device_name">设备名: %s</string>
+    <string name="en">英文</string>
+    <string name="has_debug">Has Debug</string>
+    <string name="has_emu">Has EMU</string>
+    <string name="has_hook">Has Hook</string>
+    <string name="has_inject">Has Inject</string>
+    <string name="has_root">Has Root</string>
+    <string name="has_va">Has VA</string>
+    <string name="has_vpn">Has VPN</string>
+    <string name="home_label">主页</string>
+    <string name="kernel_version">内核版本: %s</string>
+    <string name="pref_language">语言</string>
+    <string name="settings">设置</string>
+    <string name="settings_app">通用</string>
+    <string name="settings_app_desc">语言以及应用行为相关设置</string>
+    <string name="settings_label">设置</string>
+    <string name="sysinfo">System:</string>
+    <string name="the_environment_is_abnormal">环境异常</string>
+    <string name="the_environment_is_normal">环境正常</string>
+    <string name="vaild_false">false</string>
+    <string name="vaild_true">true</string>
+    <string name="zh_cn">中文 (简体)</string>
+</resources>

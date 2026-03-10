@@ -1,0 +1,2 @@
+ninja: Entering directory `/Users/xiaxi/xiaxi/project/EnvDetector/app/.cxx/RelWithDebInfo/3f20734q/arm64-v8a'
+ninja: no work to do.
