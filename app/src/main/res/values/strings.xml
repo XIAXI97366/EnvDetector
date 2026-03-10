@@ -8,7 +8,7 @@
     <string name="has_root">Has Root</string>
     <string name="has_va">Has VA</string>
     <string name="FingerPrint">Finger Print</string>
-    <string name="device_information">DEVICE: %s</string>
+    <string name="device_information">%s</string>
     <string name="device_name">Devices Name: %s</string>
     <string name="android_version">Android Version: %s</string>
     <string name="kernel_version">Kernel Version: %s</string>
@@ -27,8 +27,8 @@
     <string name="the_environment_is_normal">The Environment is normal</string>
     <string name="description_abnormal">Modifications to the environment are detected</string>
     <string name="description_normal">No modifications to the environment are detected.</string>
-    <string name="sysinfo">System</string>
-    <string name="appinfo">App</string>
+    <string name="sysinfo">System:</string>
+    <string name="appinfo">App:</string>
     <string name="pref_language">Language</string>
     <string name="en">English</string>
     <string name="zh_cn">Chinese (Simplified)</string>

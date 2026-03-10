@@ -147,3 +147,8 @@ class romEnv{
 #### 2、wchan 检测读取 /proc/self/wchan，检查线程当前在内核中的等待状态。如果检测到线程因调试而阻塞，就会触发异常处理
 
 ![image-20250912161910459](/Users/xiaxi/Library/Application Support/typora-user-images/image-20250912161910459.png)
+
+
+
+
+

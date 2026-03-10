@@ -9,7 +9,7 @@
     <string name="has_root">Has Root</string>
     <string name="has_va">Has VA</string>
     <string name="FingerPrint">设备指纹</string>
-    <string name="device_information">设备信息: %s</string>
+    <string name="device_information">%s</string>
     <string name="device_name">设备名: %s</string>
     <string name="android_version">安卓版本: %s</string>
     <string name="kernel_version">内核版本: %s</string>
@@ -28,8 +28,8 @@
     <string name="the_environment_is_normal">环境正常</string>
     <string name="description_abnormal">检测到对环境的修改</string>
     <string name="description_normal">未检测到对环境的修改。</string>
-    <string name="sysinfo">系统信息</string>
-    <string name="appinfo">应用信息</string>
+    <string name="sysinfo">System:</string>
+    <string name="appinfo">App:</string>
     <string name="pref_language">语言</string>
     <string name="en">英文</string>
     <string name="zh_cn">中文 (简体)</string>

@@ -14,11 +14,11 @@
     <string name="app_signatrue">App Signatrue: %s</string>
     <string name="app_signatrue_vaild">App Signatrue Vaild: %s</string>
     <string name="app_version">App Version: %s</string>
-    <string name="appinfo">App</string>
+    <string name="appinfo">App:</string>
     <string name="description_abnormal">Modifications to the environment are detected</string>
     <string name="description_normal">No modifications to the environment are detected.</string>
     <string name="detail">Details：</string>
-    <string name="device_information">DEVICE: %s</string>
+    <string name="device_information">%s</string>
     <string name="device_name">Devices Name: %s</string>
     <string name="en">English</string>
     <string name="has_debug">Has Debug</string>
@@ -35,7 +35,7 @@
     <string name="settings_app">App</string>
     <string name="settings_app_desc">Language, and more</string>
     <string name="settings_label">Settings</string>
-    <string name="sysinfo">System</string>
+    <string name="sysinfo">System:</string>
     <string name="the_environment_is_abnormal">The Environment is abnormal</string>
     <string name="the_environment_is_normal">The Environment is normal</string>
     <string name="vaild_false">false</string>

@@ -126,7 +126,7 @@ class MainViewModel() : ViewModel() {
     fun initializeData(context: Context) {
         viewModelScope.launch {
             _deviceInfo.value = String.format(context.getString(R.string.device_information),
-                getDevice())
+                getDevice(context))
             _androidVersion.value = String.format(context.getString(R.string.android_version),
                 Build.VERSION.RELEASE)
             _kernelVersion.value = String.format(context.getString(R.string.kernel_version),
@@ -184,8 +184,8 @@ class MainViewModel() : ViewModel() {
         return emptyList()
     }
 
-    private fun getDevice(): String {
-        return EnvDetector.showDeviceInfo();
+    private fun getDevice(context: Context): String {
+        return EnvDetector.showDeviceInfo(context);
     }
 
     /**

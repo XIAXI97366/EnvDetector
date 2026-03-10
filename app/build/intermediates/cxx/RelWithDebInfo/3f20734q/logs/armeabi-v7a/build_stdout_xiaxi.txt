@@ -1,3 +1,2 @@
 ninja: Entering directory `/Users/xiaxi/xiaxi/project/EnvDetector/app/.cxx/RelWithDebInfo/3f20734q/armeabi-v7a'
-[1/2] Building CXX object CMakeFiles/xiaxi.dir/native-lib.cpp.o
-[2/2] Linking CXX shared library /Users/xiaxi/xiaxi/project/EnvDetector/app/build/intermediates/cxx/RelWithDebInfo/3f20734q/obj/armeabi-v7a/libxiaxi.so
+ninja: no work to do.

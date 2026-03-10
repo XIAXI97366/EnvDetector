@@ -14,10 +14,10 @@
       proguardRules="proguard.txt"/>
   <library
       name=":@@:xiaxiSafe::release"
-      jars="/Users/xiaxi/.gradle/caches/8.14.3/transforms/b2d78ddbdd209abef43f435c5e19a429/transformed/out/jars/classes.jar:/Users/xiaxi/.gradle/caches/8.14.3/transforms/b2d78ddbdd209abef43f435c5e19a429/transformed/out/jars/libs/R.jar"
+      jars="/Users/xiaxi/.gradle/caches/8.14.3/transforms/13ec4735e01111d62796c0eeb5da0c03/transformed/out/jars/classes.jar:/Users/xiaxi/.gradle/caches/8.14.3/transforms/13ec4735e01111d62796c0eeb5da0c03/transformed/out/jars/libs/R.jar"
       resolved="Safety:xiaxiSafe:unspecified"
       partialResultsDir="/Users/xiaxi/xiaxi/project/EnvDetector/xiaxiSafe/build/intermediates/lint_vital_partial_results/release/lintVitalAnalyzeRelease/out"
-      folder="/Users/xiaxi/.gradle/caches/8.14.3/transforms/b2d78ddbdd209abef43f435c5e19a429/transformed/out"
+      folder="/Users/xiaxi/.gradle/caches/8.14.3/transforms/13ec4735e01111d62796c0eeb5da0c03/transformed/out"
       manifest="AndroidManifest.xml"
       resFolder="res"
       assetsFolder="assets"

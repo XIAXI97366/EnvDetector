@@ -3919,6 +3919,7 @@ string bottomsheet_action_expand
 string bottomsheet_action_expand_halfway
 string bottomsheet_drag_handle_clicked
 string bottomsheet_drag_handle_content_description
+string brand
 string call_notification_answer_action
 string call_notification_answer_video_action
 string call_notification_decline_action
@@ -3937,6 +3938,7 @@ string default_popup_window_title
 string description_abnormal
 string description_normal
 string detail
+string device
 string device_information
 string device_name
 string dropdown_menu
@@ -4052,6 +4054,7 @@ string m3c_time_picker_period_toggle_description
 string m3c_time_picker_pm
 string m3c_tooltip_long_press_label
 string m3c_tooltip_pane_description
+string manufacturer
 string material_clock_display_divider
 string material_clock_toggle_content_description
 string material_hour_24h_suffix
@@ -4074,6 +4077,7 @@ string material_timepicker_minute
 string material_timepicker_pm
 string material_timepicker_select_time
 string material_timepicker_text_input_mode_description
+string model
 string mtrl_badge_numberless_content_description
 string mtrl_checkbox_button_icon_path_checked
 string mtrl_checkbox_button_icon_path_group_name
@@ -4144,6 +4148,7 @@ string path_password_eye_mask_strike_through
 string path_password_eye_mask_visible
 string path_password_strike_through
 string pref_language
+string product
 string range_end
 string range_start
 string search_menu_title
